@@ -1,3 +1,4 @@
+css
 /* ページ全体 */
 html {
     background-image: url("./background.jpg");
@@ -93,47 +94,6 @@ body {
     text-decoration: underline;
 }
 
-/* スマホ用 */
-@media (max-width: 600px) {
-
-    .profile {
-        flex-direction: column;
-        text-align: center;
-        padding: 25px 15px;
-    }
-
-    .profile img {
-        width: 80px;
-        height: 80px;
-    }
-
-    .profile-text {
-        margin-left: 0;
-        margin-top: 15px;
-    }
-
-    .profile-text h1 {
-        font-size: 26px;
-    }
-
-    .profile-text p {
-        font-size: 16px;
-    }
-
-    .content {
-        margin: 15px;
-        padding: 18px;
-    }
-
-    .content h2 {
-        font-size: 22px;
-    }
-
-    .content p,
-    .content li {
-        font-size: 16px;
-    }
-}
 
 /* =========================
    スマホ用レイアウト
@@ -145,7 +105,7 @@ body {
     .profile {
         display: flex;
         align-items: center;
-        padding: 20px 20px;
+        padding: 20px;
     }
 
     .profile img {
