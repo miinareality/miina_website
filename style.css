@@ -1,0 +1,92 @@
+css
+body {
+    background-color: #f0f8ff;
+    color: #333333;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+
+/* プロフィール */
+.profile {
+    display: flex;
+    align-items: center;
+    padding: 30px;
+}
+
+.profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-text {
+    margin-left: 20px;
+}
+
+.profile-text h1 {
+    color: #0066cc;
+    font-size: 32px;
+    margin: 0 0 8px 0;
+}
+
+.profile-text p {
+    font-size: 18px;
+    margin: 0;
+}
+
+
+/* コンテンツ */
+.content {
+    background-color: white;
+    margin: 20px 30px;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.content h2 {
+    color: #0066cc;
+    border-bottom: 2px solid #0066cc;
+    padding-bottom: 8px;
+}
+
+.content p {
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.content li {
+    margin-bottom: 10px;
+    font-size: 17px;
+
+}
+.content a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.content a:hover {
+    color: #ff66aa;
+    text-decoration: underline;
+}
+
+html {
+    background-image: url("/static/background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+body {
+    background-color: transparent;
+    color: #333333;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+html, body {
+    overscroll-behavior-y: none;
+}
