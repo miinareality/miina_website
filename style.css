@@ -134,3 +134,63 @@ body {
         font-size: 16px;
     }
 }
+
+/* =========================
+   スマホ用レイアウト
+   ========================= */
+
+@media screen and (max-width: 600px) {
+
+    /* プロフィール */
+    .profile {
+        display: flex;
+        align-items: center;
+        padding: 20px 20px;
+    }
+
+    .profile img {
+        width: 65px;
+        height: 65px;
+    }
+
+    .profile-text {
+        margin-left: 15px;
+    }
+
+    .profile-text h1 {
+        font-size: 24px;
+        margin-bottom: 4px;
+    }
+
+    .profile-text p {
+        font-size: 13px;
+    }
+
+
+    /* コンテンツ */
+    .content {
+        margin: 15px;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .content h2 {
+        font-size: 20px;
+        padding-bottom: 6px;
+        margin-top: 0;
+    }
+
+    .content p {
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .content li {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .content a {
+        font-size: 14px;
+    }
+}
