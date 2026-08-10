@@ -16,6 +16,7 @@ body {
     min-height: 100vh;
 }
 
+/* 縦スクロールは許可、横方向のはみ出しだけ防止 */
 html,
 body {
     width: 100%;
