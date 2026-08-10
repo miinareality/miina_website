@@ -1,6 +1,6 @@
 css
 html {
-    background: url("background.jpg") center / cover no-repeat fixed;
+    background: url("background.jpg");
     min-height: 100%;
 }
 
