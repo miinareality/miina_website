@@ -93,6 +93,9 @@ body {
     margin: 0;
 }
 
-html, body {
+html,
+body {
+    overscroll-behavior-x: none;
     overscroll-behavior-y: none;
+    overflow-x: hidden;
 }
