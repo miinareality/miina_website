@@ -97,8 +97,8 @@ html,
 body {
     overscroll-behavior-x: none;
     overscroll-behavior-y: none;
-    overflow-x: hidden;
 }
+
 /* 横方向のはみ出し防止 */
 * {
     box-sizing: border-box;
