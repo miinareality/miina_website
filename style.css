@@ -1,4 +1,3 @@
-css
 /* ページ全体 */
 html {
     background-image: url("./background.jpg");
@@ -30,6 +29,7 @@ body {
     overflow-x: hidden;
 }
 
+
 /* プロフィール */
 .profile {
     display: flex;
@@ -58,6 +58,7 @@ body {
     font-size: 18px;
     margin: 0;
 }
+
 
 /* コンテンツ */
 .content {
