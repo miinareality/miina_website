@@ -1,9 +1,15 @@
 css
+html {
+    background: url("background.jpg") center / cover no-repeat fixed;
+    min-height: 100%;
+}
+
 body {
-    background-color: #f0f8ff;
+    background: transparent;
     color: #333333;
     font-family: sans-serif;
     margin: 0;
+    min-height: 100vh;
 }
 
 
