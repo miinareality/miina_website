@@ -1,6 +1,10 @@
 css
 html {
-    background: url("background.jpg") center / cover no-repeat fixed;
+    background-image: url("https://miinareality.github.io/miina_website/background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     min-height: 100%;
 }
 
@@ -12,6 +16,18 @@ body {
     min-height: 100vh;
 }
 
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    overscroll-behavior-y: none;
+}
+
+* {
+    box-sizing: border-box;
+}
 
 /* プロフィール */
 .profile {
@@ -42,10 +58,11 @@ body {
     margin: 0;
 }
 
-
 /* コンテンツ */
 .content {
     background-color: white;
+    width: calc(100% - 60px);
+    max-width: calc(100% - 60px);
     margin: 20px 30px;
     padding: 25px;
     border-radius: 10px;
@@ -65,8 +82,8 @@ body {
 .content li {
     margin-bottom: 10px;
     font-size: 17px;
-
 }
+
 .content a {
     color: #0066cc;
     text-decoration: none;
@@ -76,44 +93,4 @@ body {
 .content a:hover {
     color: #ff66aa;
     text-decoration: underline;
-}
-
-html {
-    background-image: url("https://miinareality.github.io/miina_website/background.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-
-body {
-    background-color: transparent;
-    color: #333333;
-    font-family: sans-serif;
-    margin: 0;
-}
-
-html,
-body {
-    overscroll-behavior-x: none;
-    overscroll-behavior-y: none;
-}
-
-/* 横方向のはみ出し防止 */
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    overflow-x: hidden;
-}
-
-/* コンテンツを画面幅に収める */
-.content {
-    width: calc(100% - 60px);
-    max-width: calc(100% - 60px);
 }
