@@ -16,12 +16,18 @@ body {
     min-height: 100vh;
 }
 
+/* 横方向のはみ出しだけ防止 */
 html,
 body {
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
 }
+
+* {
+    box-sizing: border-box;
+}
+
 
 /* プロフィール */
 .profile {
@@ -51,6 +57,7 @@ body {
     font-size: 18px;
     margin: 0;
 }
+
 
 /* コンテンツ */
 .content {
@@ -85,22 +92,4 @@ body {
 .content a:hover {
     color: #ff66aa;
     text-decoration: underline;
-}
-
-/* 横方向のはみ出しだけ防止 */
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    overflow-x: hidden;
-}
-
-/* プロフィール */
-.profile {
-    ...
 }
