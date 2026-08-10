@@ -99,3 +99,21 @@ body {
     overscroll-behavior-y: none;
     overflow-x: hidden;
 }
+/* 横方向のはみ出し防止 */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* コンテンツを画面幅に収める */
+.content {
+    width: calc(100% - 60px);
+    max-width: calc(100% - 60px);
+}
