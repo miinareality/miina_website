@@ -219,4 +219,9 @@ body {
     .content a {
         font-size: 14px;
     }
+    /* スマホでは background2.jpg */
+@media screen and (max-width: 600px) {
+    html {
+        background-image: url("./background2.jpg") !important;
+    }
 }
