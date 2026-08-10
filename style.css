@@ -103,9 +103,11 @@ body {
 
     /* プロフィール */
     .profile {
-    flex-direction: column;
-    text-align: center;
+        display: flex;
+        align-items: center;
+        padding: 20px;
     }
+
     .profile img {
         width: 65px;
         height: 65px;
