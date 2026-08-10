@@ -1,28 +1,15 @@
 css
 html {
-    background-image: url("background.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: url("background.jpg") center / cover no-repeat fixed;
+    min-height: 100%;
 }
 
 body {
-    margin: 0;
-    padding: 0;
     background: transparent;
     color: #333333;
     font-family: sans-serif;
-
-    /* 縦スクロールは普通に許可 */
-    overflow-y: auto;
-
-    /* 横方向だけ完全に切る */
-    overflow-x: hidden;
-}
-
-* {
-    box-sizing: border-box;
+    margin: 0;
+    min-height: 100vh;
 }
 
 
@@ -30,23 +17,18 @@ body {
 .profile {
     display: flex;
     align-items: center;
-    width: 100%;
-    max-width: 100%;
     padding: 30px;
 }
 
 .profile img {
     width: 100px;
     height: 100px;
-    max-width: 100px;
-    flex-shrink: 0;
     border-radius: 50%;
     object-fit: cover;
 }
 
 .profile-text {
     margin-left: 20px;
-    min-width: 0;
 }
 
 .profile-text h1 {
@@ -58,19 +40,15 @@ body {
 .profile-text p {
     font-size: 18px;
     margin: 0;
-    overflow-wrap: anywhere;
 }
 
 
 /* コンテンツ */
 .content {
-    width: auto;
-    max-width: none;
+    background-color: white;
     margin: 20px 30px;
     padding: 25px;
-    background-color: white;
     border-radius: 10px;
-    overflow-wrap: anywhere;
 }
 
 .content h2 {
@@ -82,20 +60,17 @@ body {
 .content p {
     font-size: 17px;
     line-height: 1.8;
-    overflow-wrap: anywhere;
 }
 
 .content li {
     margin-bottom: 10px;
     font-size: 17px;
-    overflow-wrap: anywhere;
-}
 
+}
 .content a {
     color: #0066cc;
     text-decoration: none;
     font-weight: bold;
-    overflow-wrap: anywhere;
 }
 
 .content a:hover {
@@ -103,15 +78,42 @@ body {
     text-decoration: underline;
 }
 
+html {
+    background-image: url("https://miinareality.github.io/miina_website/background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
 
-/* スマホ・狭い画面 */
-@media (max-width: 600px) {
-    .profile {
-        padding: 20px;
-    }
+body {
+    background-color: transparent;
+    color: #333333;
+    font-family: sans-serif;
+    margin: 0;
+}
 
-    .content {
-        margin: 15px;
-        padding: 20px;
-    }
+html,
+body {
+    overscroll-behavior-x: none;
+    overscroll-behavior-y: none;
+}
+
+/* 横方向のはみ出し防止 */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* コンテンツを画面幅に収める */
+.content {
+    width: calc(100% - 60px);
+    max-width: calc(100% - 60px);
 }
