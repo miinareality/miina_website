@@ -101,7 +101,10 @@ body {
    ========================= */
 
 @media screen and (max-width: 600px) {
-
+    html {
+        background-image: url("./background2.jpg");
+    }
+}
     /* プロフィール */
     .profile {
         display: flex;
