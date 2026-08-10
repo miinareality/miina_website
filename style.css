@@ -16,6 +16,13 @@ body {
     min-height: 100vh;
 }
 
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 /* プロフィール */
 .profile {
     display: flex;
