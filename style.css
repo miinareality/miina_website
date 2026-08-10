@@ -1,50 +1,52 @@
 css
 html {
-    background-image: url("https://miinareality.github.io/miina_website/background.jpg");
+    background-image: url("background.jpg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    min-height: 100%;
 }
 
 body {
+    margin: 0;
+    padding: 0;
     background: transparent;
     color: #333333;
     font-family: sans-serif;
-    margin: 0;
-    min-height: 100vh;
-}
 
-/* 縦スクロールは許可、横方向のはみ出しだけ防止 */
-html,
-body {
-    width: 100%;
-    max-width: 100%;
+    /* 縦スクロールは普通に許可 */
+    overflow-y: auto;
+
+    /* 横方向だけ完全に切る */
     overflow-x: hidden;
-    overscroll-behavior-y: none;
 }
 
 * {
     box-sizing: border-box;
 }
 
+
 /* プロフィール */
 .profile {
     display: flex;
     align-items: center;
+    width: 100%;
+    max-width: 100%;
     padding: 30px;
 }
 
 .profile img {
     width: 100px;
     height: 100px;
+    max-width: 100px;
+    flex-shrink: 0;
     border-radius: 50%;
     object-fit: cover;
 }
 
 .profile-text {
     margin-left: 20px;
+    min-width: 0;
 }
 
 .profile-text h1 {
@@ -56,16 +58,19 @@ body {
 .profile-text p {
     font-size: 18px;
     margin: 0;
+    overflow-wrap: anywhere;
 }
+
 
 /* コンテンツ */
 .content {
-    background-color: white;
-    width: calc(100% - 60px);
-    max-width: calc(100% - 60px);
+    width: auto;
+    max-width: none;
     margin: 20px 30px;
     padding: 25px;
+    background-color: white;
     border-radius: 10px;
+    overflow-wrap: anywhere;
 }
 
 .content h2 {
@@ -77,20 +82,36 @@ body {
 .content p {
     font-size: 17px;
     line-height: 1.8;
+    overflow-wrap: anywhere;
 }
 
 .content li {
     margin-bottom: 10px;
     font-size: 17px;
+    overflow-wrap: anywhere;
 }
 
 .content a {
     color: #0066cc;
     text-decoration: none;
     font-weight: bold;
+    overflow-wrap: anywhere;
 }
 
 .content a:hover {
     color: #ff66aa;
     text-decoration: underline;
+}
+
+
+/* スマホ・狭い画面 */
+@media (max-width: 600px) {
+    .profile {
+        padding: 20px;
+    }
+
+    .content {
+        margin: 15px;
+        padding: 20px;
+    }
 }
