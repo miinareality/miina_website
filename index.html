@@ -103,33 +103,28 @@
     </p>
 </section>
     
-    <!-- 訪問者数 -->
-<div id="visitor-count">
-    <p>訪問者数：</p>
-</div>
+<!-- 訪問者数 -->
+
+<section class="content">
+    <h2>訪問者数</h2>
+    <div id="visitor-count"></div>
+</section>
 
 <script>
-    window.goatcounter = {
-        no_onload: true
-    };
-
-    const script = document.createElement("script");
-    script.src = "https://gc.zgo.at/count.js";
-    script.setAttribute(
-        "data-goatcounter",
-        "https://miina-reality-goatcounter.goatcounter.com/count"
-    );
-    document.body.appendChild(script);
-
-    const timer = setInterval(function () {
+    var t = setInterval(function() {
         if (window.goatcounter && window.goatcounter.visit_count) {
-            clearInterval(timer);
-
+            clearInterval(t);
             window.goatcounter.visit_count({
                 append: "#visitor-count"
             });
         }
     }, 100);
+</script>
+
+<script
+    data-goatcounter="https://miina-reality-goatcounter.goatcounter.com/count"
+    async
+    src="//gc.zgo.at/count.js">
 </script>
 
 </body>
