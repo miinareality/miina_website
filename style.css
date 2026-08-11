@@ -16,18 +16,13 @@ body {
     min-height: 100vh;
 }
 
-/* 横方向のはみ出しを防止 */
-* {
-    box-sizing: border-box;
-}
-
+/* 横方向だけはみ出し防止 */
 html,
 body {
     width: 100%;
     max-width: 100%;
     margin: 0;
     overflow-x: hidden;
-    overscroll-behavior-x: none;
 }
 
 
