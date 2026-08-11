@@ -102,6 +102,35 @@
         </a>
     </p>
 </section>
+    
+    <!-- 訪問者数 -->
+<div id="visitor-count">
+    <p>訪問者数：</p>
+</div>
+
+<script>
+    window.goatcounter = {
+        no_onload: true
+    };
+
+    const script = document.createElement("script");
+    script.src = "https://gc.zgo.at/count.js";
+    script.setAttribute(
+        "data-goatcounter",
+        "https://あなたのコード.goatcounter.com/count"
+    );
+    document.body.appendChild(script);
+
+    const timer = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.visit_count) {
+            clearInterval(timer);
+
+            window.goatcounter.visit_count({
+                append: "#visitor-count"
+            });
+        }
+    }, 100);
+</script>
 
 </body>
 </html>
