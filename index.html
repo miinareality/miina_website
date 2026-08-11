@@ -109,6 +109,19 @@
     <div id="visitor-count">読み込み中...</div>
 </section>
 
+<!-- GoatCounter -->
+<script>
+    var t = setInterval(function() {
+        if (window.goatcounter && window.goatcounter.visit_count) {
+            clearInterval(t);
+
+            window.goatcounter.visit_count({
+                append: "#visitor-count"
+            });
+        }
+    }, 100);
+</script>
+
 <script
     data-goatcounter="https://miina-reality-goatcounter.goatcounter.com/count"
     async
