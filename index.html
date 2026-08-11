@@ -104,22 +104,10 @@
 </section>
     
 <!-- 訪問者数 -->
-
 <section class="content">
     <h2>訪問者数</h2>
-    <div id="visitor-count"></div>
+    <div id="visitor-count">読み込み中...</div>
 </section>
-
-<script>
-    var t = setInterval(function() {
-        if (window.goatcounter && window.goatcounter.visit_count) {
-            clearInterval(t);
-            window.goatcounter.visit_count({
-                append: "#visitor-count"
-            });
-        }
-    }, 100);
-</script>
 
 <script
     data-goatcounter="https://miina-reality-goatcounter.goatcounter.com/count"
