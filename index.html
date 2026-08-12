@@ -59,60 +59,100 @@
     <h2>🎲 ダイスロール</h2>
 
     <p>
-        「2d6」のように入力してください。
+        「2d6」や「2d6+6d8」のように入力してください。
     </p>
 
     <input
         type="text"
         id="diceInput"
-        placeholder="例：2d6"
+        placeholder="例：2d6+6d8"
         value="1d6"
     >
 
     <button onclick="rollDice()">振る！</button>
-    <script>
+
+    <div id="diceResult"></div>
+</section>
+
+<script>
 function rollDice() {
     const input = document.getElementById("diceInput").value.trim();
     const result = document.getElementById("diceResult");
 
-    const match = input.match(/^(\d+)[dD](\d+)$/);
+    // 「+」でダイス式を分割
+    const expressions = input.split("+").map(item => item.trim());
 
-    if (!match) {
-        result.textContent = "「2d6」のような形式で入力してください。";
+    if (expressions.length === 0) {
+        result.textContent = "「2d6」のように入力してください。";
         return;
     }
 
-    const diceCount = Number(match[1]);
-    const diceSides = Number(match[2]);
+    let grandTotal = 0;
+    let resultHTML = "";
 
-    if (diceCount <= 0 || diceSides <= 0) {
-        result.textContent = "1以上の数字を入力してください。";
-        return;
+    for (const expression of expressions) {
+
+        // ○d○○ の形式を確認
+        const match = expression.match(/^(\d+)[dD](\d+)$/);
+
+        if (!match) {
+            result.textContent =
+                `「${expression}」の形式が正しくありません。`;
+            return;
+        }
+
+        const diceCount = Number(match[1]);
+        const diceSides = Number(match[2]);
+
+        // 数値チェック
+        if (diceCount <= 0 || diceSides <= 0) {
+            result.textContent =
+                "ダイスの数と面数は1以上にしてください。";
+            return;
+        }
+
+        // 暴走防止
+        if (diceCount > 100 || diceSides > 1000) {
+            result.textContent =
+                "ダイスの数は100個、面数は1000面までです。";
+            return;
+        }
+
+        const rolls = [];
+
+        for (let i = 0; i < diceCount; i++) {
+            const roll =
+                Math.floor(Math.random() * diceSides) + 1;
+
+            rolls.push(roll);
+        }
+
+        const total = rolls.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+
+        grandTotal += total;
+
+        resultHTML += `
+            <p>
+                <strong>${expression}</strong>
+                → ${rolls.join(" + ")}
+                = <strong>${total}</strong>
+            </p>
+        `;
     }
 
-    if (diceCount > 100 || diceSides > 1000) {
-        result.textContent = "ダイスの数は100個、面数は1000面までです。";
-        return;
-    }
-
-    const rolls = [];
-
-    for (let i = 0; i < diceCount; i++) {
-        const roll = Math.floor(Math.random() * diceSides) + 1;
-        rolls.push(roll);
-    }
-
-    const total = rolls.reduce((sum, value) => sum + value, 0);
-
-    result.innerHTML = `
-        <p><strong>合計：${total}</strong></p>
-        <p>出目：${rolls.join(" + ")}</p>
+    resultHTML += `
+        <hr>
+        <p>
+            <strong>合計：${grandTotal}</strong>
+        </p>
     `;
+
+    result.innerHTML = resultHTML;
 }
 </script>
-
-    <div id="diceResult"></div>
-</section>
     
 <!-- アカウント -->
 <section class="content">
