@@ -56,7 +56,7 @@
 
 <!-- ダイス -->
 <section class="content">
-    <h2>🎲 お遊びダイスロール</h2>
+    <h2>🎲 ダイスロール</h2>
 
     <p>
         「2d6」や「2d6+6d8」のように入力してください。
@@ -70,6 +70,7 @@
     >
 
     <button onclick="rollDice()">振る！</button>
+    <button onclick="resetDice()">リセット</button>
 
     <div id="diceResult"></div>
 </section>
@@ -79,7 +80,6 @@ function rollDice() {
     const input = document.getElementById("diceInput").value.trim();
     const result = document.getElementById("diceResult");
 
-    // 「+」でダイス式を分割
     const expressions = input.split("+").map(item => item.trim());
 
     if (expressions.length === 0) {
@@ -92,7 +92,6 @@ function rollDice() {
 
     for (const expression of expressions) {
 
-        // ○d○○ の形式を確認
         const match = expression.match(/^(\d+)[dD](\d+)$/);
 
         if (!match) {
@@ -104,14 +103,12 @@ function rollDice() {
         const diceCount = Number(match[1]);
         const diceSides = Number(match[2]);
 
-        // 数値チェック
         if (diceCount <= 0 || diceSides <= 0) {
             result.textContent =
                 "ダイスの数と面数は1以上にしてください。";
             return;
         }
 
-        // 暴走防止
         if (diceCount > 100 || diceSides > 1000) {
             result.textContent =
                 "ダイスの数は100個、面数は1000面までです。";
@@ -151,6 +148,12 @@ function rollDice() {
     `;
 
     result.innerHTML = resultHTML;
+}
+
+
+// ダイス結果をリセット
+function resetDice() {
+    document.getElementById("diceResult").innerHTML = "";
 }
 </script>
     
