@@ -85,7 +85,6 @@ function rollDice() {
         return;
     }
 
-    // + で分割
     const terms = input.split("+").map(term => term.trim());
 
     let total = 0;
@@ -93,15 +92,22 @@ function rollDice() {
 
     for (const term of terms) {
 
-        // 固定値
+        // 固定値の場合
         if (/^\d+$/.test(term)) {
             const value = Number(term);
+
             total += value;
-            details.push(`+${value}`);
+
+            details.push(`
+                <div class="dice-log">
+                    ${value}
+                </div>
+            `);
+
             continue;
         }
 
-        // ダイス
+        // ダイスの場合
         const match = term.match(/^(\d+)[dD](\d+)$/);
 
         if (!match) {
@@ -139,14 +145,16 @@ function rollDice() {
 
         total += diceTotal;
 
-        details.push(
-            `${diceCount}d${diceSides} [${rolls.join(" + ")}]`
-        );
+        details.push(`
+            <div class="dice-log">
+                ${diceCount}d${diceSides}[${rolls.join(" + ")}]
+            </div>
+        `);
     }
 
     result.innerHTML = `
+        ${details.join("")}
         <p><strong>合計：${total}</strong></p>
-        <p>${details.join(" + ")}</p>
     `;
 }
 
