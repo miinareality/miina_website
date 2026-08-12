@@ -67,6 +67,7 @@
     id="diceInput"
     placeholder="例：2d6+6d8"
     value=""
+    onkeydown="if (event.key === 'Enter') rollDice()"
 >
 
 <button onclick="rollDice()">振る！</button>
