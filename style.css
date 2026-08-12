@@ -222,7 +222,7 @@ body {
     .content a {
         font-size: 14px;
     }
-    /* スマホでは background2.jpg */
+    /* スマホの壁紙変更場所 */
 @media screen and (max-width: 600px) {
     html {
         background-image: url("./background2.jpg") !important;
