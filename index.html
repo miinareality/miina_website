@@ -54,6 +54,66 @@
     </ul>
 </section>
 
+<!-- ダイス -->
+<section class="content">
+    <h2>🎲 ダイスロール</h2>
+
+    <p>
+        「2d6」のように入力してください。
+    </p>
+
+    <input
+        type="text"
+        id="diceInput"
+        placeholder="例：2d6"
+        value="1d6"
+    >
+
+    <button onclick="rollDice()">振る！</button>
+    <script>
+function rollDice() {
+    const input = document.getElementById("diceInput").value.trim();
+    const result = document.getElementById("diceResult");
+
+    const match = input.match(/^(\d+)[dD](\d+)$/);
+
+    if (!match) {
+        result.textContent = "「2d6」のような形式で入力してください。";
+        return;
+    }
+
+    const diceCount = Number(match[1]);
+    const diceSides = Number(match[2]);
+
+    if (diceCount <= 0 || diceSides <= 0) {
+        result.textContent = "1以上の数字を入力してください。";
+        return;
+    }
+
+    if (diceCount > 100 || diceSides > 1000) {
+        result.textContent = "ダイスの数は100個、面数は1000面までです。";
+        return;
+    }
+
+    const rolls = [];
+
+    for (let i = 0; i < diceCount; i++) {
+        const roll = Math.floor(Math.random() * diceSides) + 1;
+        rolls.push(roll);
+    }
+
+    const total = rolls.reduce((sum, value) => sum + value, 0);
+
+    result.innerHTML = `
+        <p><strong>合計：${total}</strong></p>
+        <p>出目：${rolls.join(" + ")}</p>
+    `;
+}
+</script>
+
+    <div id="diceResult"></div>
+</section>
+    
 <!-- アカウント -->
 <section class="content">
     <h2>リンク集</h2>
