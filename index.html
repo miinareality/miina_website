@@ -184,6 +184,12 @@ function toggleMenu() {
 
     menu.classList.toggle("open");
 }
+
+document.querySelectorAll("#sideMenu a").forEach(link => {
+    link.addEventListener("click", function() {
+        document.getElementById("sideMenu").classList.remove("open");
+    });
+});
 </script>
     
 <!-- アカウント -->
