@@ -35,6 +35,17 @@
         ブロック対応をする可能性がありますのでご了承ください。
     </p>
 </section>
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.classList.toggle("open");
+}
 
+document.querySelectorAll("#sideMenu a").forEach(link => {
+    link.addEventListener("click", function() {
+        document.getElementById("sideMenu").classList.remove("open");
+    });
+});
+</script>
 </body>
 </html>
