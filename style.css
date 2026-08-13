@@ -16,6 +16,93 @@ body {
     min-height: 100vh;
 }
 
+/* =========================
+   右上メニュー
+========================= */
+
+.menu-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+
+    padding: 10px 16px;
+
+    border: 1px solid #007bff;
+    border-radius: 8px;
+
+    background: white;
+    color: #007bff;
+
+    font-size: 16px;
+    cursor: pointer;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.menu-button:hover {
+    background: #f0f7ff;
+}
+
+
+/* 右側から出てくるメニュー */
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: -300px;
+
+    width: 260px;
+    height: 100vh;
+
+    z-index: 1000;
+
+    padding: 80px 20px 20px;
+
+    background: white;
+
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+
+    transition: right 0.3s ease;
+}
+
+
+/* メニューが開いた状態 */
+
+.side-menu.open {
+    right: 0;
+}
+
+
+/* メニュータイトル */
+
+.side-menu h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+
+    border-bottom: 2px solid #007bff;
+
+    color: #007bff;
+}
+
+
+/* メニューのリンク */
+
+.side-menu a {
+    display: block;
+
+    padding: 14px 10px;
+
+    color: #007bff;
+    text-decoration: none;
+
+    border-bottom: 1px solid #ddd;
+}
+
+.side-menu a:hover {
+    background: #f0f7ff;
+}
+
 /* 横方向だけはみ出し防止 */
 html,
 body {
