@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダイス - ミィナのWebサイト</title>
+    <link rel="icon" type="image/x-icon" href="/miina_website/favicon.ico">
+    <link rel="apple-touch-icon" href="/miina_website/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- メニューボタン -->
+<button id="menuButton" class="menu-button" onclick="toggleMenu()">
+    ☰ メニュー
+</button>
+
+<!-- 右側メニュー -->
+<nav id="sideMenu" class="side-menu">
+    <h2>メニュー</h2>
+
+<a href="./">🏠 ホーム</a>
+<a href="dice.html">🎲 ダイス</a>
+<a href="member.html">🙍 バッチ取得者への待遇</a>
+<a href="materials.html">🖼 使用素材</a>
+<a href="business.html">💼 企業様への連絡</a>
+</nav>
+
+<section class="content">
+    <h2>🎲 お遊び用ダイスロール</h2>
+
+    <p>「2d6」や「2d6+6d8」のように入力してください。</p>
+
+    <input type="text" id="diceInput" placeholder="例：2d6+6d8" value=""
+           onkeydown="if (event.key === 'Enter') rollDice()">
+
+    <button onclick="rollDice()">振る！</button>
+    <button onclick="resetDice()">リセット</button>
+
+    <div id="diceResult"></div>
+</section>
+
+<script>
+function rollDice() {
+    const input = document.getElementById("diceInput").value.trim();
+    const result = document.getElementById("diceResult");
+
+    if (!input) {
+        result.textContent = "ダイスを入力してください。";
+        return;
+    }
+
+    const terms = input.split("+").map(term => term.trim());
+
+    let total = 0;
+    const details = [];
+
+    for (const term of terms) {
+        if (/^\d+$/.test(term)) {
+            const value = Number(term);
+            total += value;
+            details.push(`<div class="dice-log">${value}</div>`);
+            continue;
+        }
+
+        const match = term.match(/^(\d+)[dD](\d+)$/);
+
+        if (!match) {
+            result.textContent = `「${term}」の形式が正しくありません。`;
+            return;
+        }
+
+        const diceCount = Number(match[1]);
+        const diceSides = Number(match[2]);
+
+        if (diceCount <= 0 || diceSides <= 0) {
+            result.textContent = "1以上の数字を入力してください。";
+            return;
+        }
+
+        if (diceCount > 100 || diceSides > 1000) {
+            result.textContent = "ダイスの数は100個、面数は1000面までです。";
+            return;
+        }
+
+        const rolls = [];
+
+        for (let i = 0; i < diceCount; i++) {
+            const roll = Math.floor(Math.random() * diceSides) + 1;
+            rolls.push(roll);
+        }
+
+        const diceTotal = rolls.reduce((sum, value) => sum + value, 0);
+        total += diceTotal;
+
+        details.push(`
+            <div class="dice-log">
+                ${diceCount}d${diceSides}[${rolls.join(" + ")}]
+            </div>
+        `);
+    }
+
+    result.innerHTML = `
+        ${details.join("")}
+        <p><strong>合計：${total}</strong></p>
+    `;
+}
+
+function resetDice() {
+    document.getElementById("diceResult").innerHTML = "";
+}
+</script>
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.classList.toggle("open");
+}
+
+document.querySelectorAll("#sideMenu a").forEach(link => {
+    link.addEventListener("click", function() {
+        document.getElementById("sideMenu").classList.remove("open");
+    });
+});
+</script>
+</body>
+</html>
