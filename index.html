@@ -67,130 +67,6 @@
         
     </ul>
 </section>
-
-<!-- ダイス -->
-<section class="content" id="dice">
-    <h2>🎲 お遊び用ダイスロール</h2>
-
-    <p>
-        「2d6」や「2d6+6d8」のように入力してください。
-    </p>
-
-<input
-    type="text"
-    id="diceInput"
-    placeholder="例：2d6+6d8"
-    value=""
-    onkeydown="if (event.key === 'Enter') rollDice()"
->
-
-<button onclick="rollDice()">振る！</button>
-<button onclick="resetDice()">リセット</button>
-
-<div id="diceResult"></div>
-</section>
-
-<script>
-function rollDice() {
-    const input = document.getElementById("diceInput").value.trim();
-    const result = document.getElementById("diceResult");
-
-    if (!input) {
-        result.textContent = "ダイスを入力してください。";
-        return;
-    }
-
-    const terms = input.split("+").map(term => term.trim());
-
-    let total = 0;
-    const details = [];
-
-    for (const term of terms) {
-
-        // 固定値の場合
-        if (/^\d+$/.test(term)) {
-            const value = Number(term);
-
-            total += value;
-
-            details.push(`
-                <div class="dice-log">
-                    ${value}
-                </div>
-            `);
-
-            continue;
-        }
-
-        // ダイスの場合
-        const match = term.match(/^(\d+)[dD](\d+)$/);
-
-        if (!match) {
-            result.textContent =
-                `「${term}」の形式が正しくありません。`;
-            return;
-        }
-
-        const diceCount = Number(match[1]);
-        const diceSides = Number(match[2]);
-
-        if (diceCount <= 0 || diceSides <= 0) {
-            result.textContent =
-                "1以上の数字を入力してください。";
-            return;
-        }
-
-        if (diceCount > 100 || diceSides > 1000) {
-            result.textContent =
-                "ダイスの数は100個、面数は1000面までです。";
-            return;
-        }
-
-        const rolls = [];
-
-        for (let i = 0; i < diceCount; i++) {
-            const roll =
-                Math.floor(Math.random() * diceSides) + 1;
-
-            rolls.push(roll);
-        }
-
-        const diceTotal =
-            rolls.reduce((sum, value) => sum + value, 0);
-
-        total += diceTotal;
-
-        details.push(`
-            <div class="dice-log">
-                ${diceCount}d${diceSides}[${rolls.join(" + ")}]
-            </div>
-        `);
-    }
-
-    result.innerHTML = `
-        ${details.join("")}
-        <p><strong>合計：${total}</strong></p>
-    `;
-}
-
-function resetDice() {
-    document.getElementById("diceResult").innerHTML = "";
-}
-</script>
-
-<script>
-function toggleMenu() {
-    const menu = document.getElementById("sideMenu");
-
-    menu.classList.toggle("open");
-}
-
-document.querySelectorAll("#sideMenu a").forEach(link => {
-    link.addEventListener("click", function() {
-        document.getElementById("sideMenu").classList.remove("open");
-    });
-});
-</script>
     
 <!-- アカウント -->
 <section class="content">
@@ -226,26 +102,6 @@ document.querySelectorAll("#sideMenu a").forEach(link => {
     </ul>
     
 </section>
-
-<!-- 使用素材 -->
-<section class="content" id="materials">
-    <h2>使用させていただいた素材</h2>
-
-    <p>
-        <a href="https://azukichi.net/heart/heart-back0043.html"
-           target="_blank"
-           rel="noopener noreferrer">
-            ハートの壁紙・背景素材（風船とバラの花束）
-        </a>
-    </p>
-    <p>
-        <a href="https://divnil.com/wallpaper/iphone/item_5/33blue-960x640-47_bec524fc46c9f4587a1b09a52ff4415b.html"
-            target="_blank"
-            rel="noopener noreferrer">
-            青空｜iPhone/スマホ壁紙ギャラリー
-        </a>
-    </p>
-</section>
     
 <!-- 訪問者数 -->
 <section class="content">
@@ -266,16 +122,6 @@ document.querySelectorAll("#sideMenu a").forEach(link => {
     async
     src="https://gc.zgo.at/count.js">
 </script>
-    
-    <section class="content" id="business">
-    <h2>企業様のための連絡手段</h2>
-    <p>
-        連絡用outlookアカウント：miinacontonry@outlook.com
-    </p>
-<P>
-    もし、スパムやリスナーからのただのメールだった場合、ブロック対応をする可能性がありますのでご了承ください。
-</P>
-</section>
     
 </body>
 </html>
