@@ -16,6 +16,20 @@
 
 <body>
 
+<!-- メニューボタン -->
+<button id="menuButton" class="menu-button" onclick="toggleMenu()">
+    ☰ メニュー
+</button>
+
+<!-- 右側メニュー -->
+<nav id="sideMenu" class="side-menu">
+    <h2>メニュー</h2>
+
+    <a href="#dice">🎲 ダイス</a>
+    <a href="#materials">🖼 使用素材</a>
+    <a href="#business">💼 企業様への連絡</a>
+</nav>
+
 <!-- プロフィール -->
 <div class="profile">
     <img src="/miina_website/icon.png" alt="アイコン">
@@ -55,7 +69,7 @@
 </section>
 
 <!-- ダイス -->
-<section class="content">
+<section class="content" id="dice">
     <h2>🎲 お遊び用ダイスロール</h2>
 
     <p>
@@ -200,7 +214,7 @@ function resetDice() {
 </section>
 
 <!-- 使用素材 -->
-<section class="content">
+<section class="content" id="materials">
     <h2>使用させていただいた素材</h2>
 
     <p>
@@ -220,7 +234,7 @@ function resetDice() {
 </section>
     
 <!-- 訪問者数 -->
-<section class="content">
+<section class="content" id="business">
     <h2>訪問者数</h2>
     <p>
         ADBlockを適応しているとこちらは表示されません。見たい場合は解除してからご覧ください。訪問者数は反映されるまで最大3時間かかる見込みです。ご了承ください。
