@@ -25,10 +25,24 @@
 <nav id="sideMenu" class="side-menu">
     <h2>メニュー</h2>
 
-    <a href="#dice">🎲 ダイス</a>
-    <a href="#materials">🖼 使用素材</a>
-    <a href="#business">💼 企業様への連絡</a>
+<a href="dice.html">🎲 ダイス</a>
+<a href="materials.html">🖼 使用素材</a>
+<a href="business.html">💼 企業様への連絡</a>
 </nav>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+
+    menu.classList.toggle("open");
+}
+
+document.querySelectorAll("#sideMenu a").forEach(link => {
+    link.addEventListener("click", function() {
+        document.getElementById("sideMenu").classList.remove("open");
+    });
+});
+</script>
 
 <!-- プロフィール -->
 <div class="profile">
