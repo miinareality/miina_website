@@ -104,6 +104,8 @@ function rollDice() {
         ${details.join("")}
         <p><strong>合計：${total}</strong></p>
     `;
+saveDiceResult(input, total);
+saveDiceHistory(input);
 }
 
 function resetDice() {
