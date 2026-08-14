@@ -16,27 +16,19 @@ body {
     min-height: 100vh;
 }
 
-/* =========================
-   右上メニュー
-========================= */
-
+/* 右上メニュー */
 .menu-button {
     position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1001;
-
     padding: 10px 16px;
-
     border: 1px solid #007bff;
     border-radius: 8px;
-
     background: white;
     color: #007bff;
-
     font-size: 16px;
     cursor: pointer;
-
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -186,9 +178,7 @@ body {
 }
 
 
-/* =========================
-   スマホ用レイアウト
-   ========================= */
+/* スマホ用レイアウト */
 
 @media screen and (max-width: 600px) {
     html {
@@ -314,4 +304,26 @@ body {
     html {
         background-image: url("./background2.jpg") !important;
     }
+}
+/* 右上のボタン */
+.top-buttons {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* ログインボタン */
+.auth-button {
+    padding: 10px 16px;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    background: white;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 16px;
 }
