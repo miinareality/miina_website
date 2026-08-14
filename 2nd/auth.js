@@ -479,20 +479,6 @@ function getAuthErrorMessage(error) {
     return "エラーが発生しました：" + message;
 
 }
-/* Supabase設定 */
-
-const SUPABASE_URL =
-    "https://xbactiinrfyjdxidlxqug.supabase.co";
-
-const SUPABASE_PUBLISHABLE_KEY =
-    "あなたのPublishable key";
-
-const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
-
-
 /* ログイン状態を確認 */
 
 async function checkLoginStatus() {
