@@ -1,24 +1,18 @@
-/* ========================================
-   Supabase 認証
-   2nd/auth.js
-   ======================================== */
+/* Supabase 認証
+   2nd/auth.js */
 
 
-/* ========================================
-   Supabase設定
-   ======================================== */
+/* Supabase設定 */
 
 // SupabaseのプロジェクトURL
 const SUPABASE_URL = "https://xbactinrfyjdxidlxqug.supabase.co";
 
 // Supabaseの「公開可能なキー」をここに貼り付ける
 // sb_publishable_... から始まるキーを使用してください。
-const SUPABASE_PUBLISHABLE_KEY = "ここにsb_publishable_から始まるキーを入れる";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_suDqy2nOQ2nd616qIhR2hg_sX-_2Anc";
 
 
-/* ========================================
-   Supabaseライブラリを読み込む
-   ======================================== */
+/* Supabaseライブラリを読み込む */
 
 const supabaseScript = document.createElement("script");
 
@@ -40,9 +34,7 @@ supabaseScript.onerror = function () {
 document.head.appendChild(supabaseScript);
 
 
-/* ========================================
-   Supabase初期化
-   ======================================== */
+/* Supabase初期化 */
 
 let supabaseClient = null;
 
@@ -76,9 +68,7 @@ function initializeSupabase() {
 }
 
 
-/* ========================================
-   メッセージ表示
-   ======================================== */
+/* メッセージ表示 */
 
 function showAuthMessage(message, isError = false) {
 
@@ -100,9 +90,7 @@ function showAuthMessage(message, isError = false) {
 }
 
 
-/* ========================================
-   ログイン・新規登録ボタン
-   ======================================== */
+/* ログイン・新規登録ボタン */
 
 function setupAuthEvents() {
 
@@ -113,9 +101,7 @@ function setupAuthEvents() {
         document.getElementById("signupButton");
 
 
-    /* -----------------------------
-       ログイン
-       ----------------------------- */
+    /* ログイン */
 
     if (loginButton) {
 
@@ -208,9 +194,7 @@ function setupAuthEvents() {
     }
 
 
-    /* -----------------------------
-       新規登録
-       ----------------------------- */
+    /* 新規登録 */
 
     if (signupButton) {
 
