@@ -82,9 +82,7 @@
 </section>
 
 <script>
-/* =========================
-   Cookie関連
-   ========================= */
+/* Cookie関連 */
 
 function setCookie(name, value, days = 365) {
     const expires = new Date();
@@ -117,10 +115,7 @@ function getCookie(name) {
     return null;
 }
 
-/* =========================
-   ダイス結果ログ
-   最大10件
-   ========================= */
+/* ダイス結果ログ 最大10件 */
 
 function getDiceResults() {
     const cookie = getCookie("diceResults");
@@ -177,11 +172,7 @@ function displayDiceResults() {
     });
 }
 
-/* =========================
-   ダイス式ログ
-   Cookie側は最大3件
-   JSON側の3件と合わせて最大6件
-   ========================= */
+/* ダイス式ログ Cookie側は最大3件 JSON側の3件と合わせて最大6件 */
 
 function getDiceHistory() {
     const cookie = getCookie("diceHistory");
@@ -216,9 +207,7 @@ function saveDiceHistory(input) {
     loadDiceHistory();
 }
 
-/* =========================
-   JSON + Cookieのダイス式を表示
-   ========================= */
+/* JSON + Cookieのダイス式を表示 */
 
 async function loadDiceHistory() {
     const historyContainer = document.getElementById("diceHistory");
@@ -395,7 +384,6 @@ document.addEventListener("DOMContentLoaded", function() {
     loadDiceHistory();
 });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./auth.js"></script>
 </body>
 </html>
