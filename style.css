@@ -1,329 +1,329 @@
 /* ページ全体 */
 html {
-    background-image: url("./background.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100%;
+background-image: url("./background.jpg");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+min-height: 100%;
 }
 
 body {
-    background: transparent;
-    color: #333333;
-    font-family: sans-serif;
-    margin: 0;
-    min-height: 100vh;
+background: transparent;
+color: #333333;
+font-family: sans-serif;
+margin: 0;
+min-height: 100vh;
 }
 
 /* 右上メニュー */
 .menu-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1001;
-    padding: 10px 16px;
-    border: 1px solid #007bff;
-    border-radius: 8px;
-    background: white;
-    color: #007bff;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+position: fixed;
+top: 20px;
+right: 20px;
+z-index: 1001;
+padding: 10px 16px;
+border: 1px solid #007bff;
+border-radius: 8px;
+background: white;
+color: #007bff;
+font-size: 16px;
+cursor: pointer;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .menu-button:hover {
-    background: #f0f7ff;
+background: #f0f7ff;
 }
 
 
 /* 右側から出てくるメニュー */
 
 .side-menu {
-    position: fixed;
-    top: 0;
-    right: -300px;
+position: fixed;
+top: 0;
+right: -300px;
 
-    width: 260px;
-    height: 100vh;
+width: 260px;
+height: 100vh;
 
-    z-index: 1000;
+z-index: 1000;
 
-    padding: 80px 20px 20px;
+padding: 80px 20px 20px;
 
-    background: white;
+background: white;
 
-    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
 
-    transition: right 0.3s ease;
+transition: right 0.3s ease;
 }
 
 
 /* メニューが開いた状態 */
 
 .side-menu.open {
-    right: 0;
+right: 0;
 }
 
 
 /* メニュータイトル */
 
 .side-menu h2 {
-    margin-top: 0;
-    padding-bottom: 10px;
+margin-top: 0;
+padding-bottom: 10px;
 
-    border-bottom: 2px solid #007bff;
+border-bottom: 2px solid #007bff;
 
-    color: #007bff;
+color: #007bff;
 }
 
 
 /* メニューのリンク */
 
 .side-menu a {
-    display: block;
+display: block;
 
-    padding: 14px 10px;
+padding: 14px 10px;
 
-    color: #007bff;
-    text-decoration: none;
+color: #007bff;
+text-decoration: none;
 
-    border-bottom: 1px solid #ddd;
+border-bottom: 1px solid #ddd;
 }
 
 .side-menu a:hover {
-    background: #f0f7ff;
+background: #f0f7ff;
 }
 
 /* 横方向だけはみ出し防止 */
 html,
 body {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    overflow-x: hidden;
+width: 100%;
+max-width: 100%;
+margin: 0;
+overflow-x: hidden;
 }
 
 
 /* プロフィール */
 .profile {
-    display: flex;
-    align-items: center;
+display: flex;
+align-items: center;
 
-    padding: 20px 30px;
-    margin: 20px 30px;
+padding: 20px 30px;
+margin: 20px 30px;
 
-    background-color: rgba(255, 245, 225, 0.88);
-    border-radius: 15px;
+background-color: rgba(255, 245, 225, 0.88);
+border-radius: 15px;
 
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 .profile img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
+width: 100px;
+height: 100px;
+border-radius: 50%;
+object-fit: cover;
 }
 
 .profile-text {
-    margin-left: 20px;
+margin-left: 20px;
 }
 
 .profile-text h1 {
-    color: #0066cc;
-    font-size: 32px;
-    margin: 0 0 8px 0;
+color: #0066cc;
+font-size: 32px;
+margin: 0 0 8px 0;
 }
 
 .profile-text p {
-    font-size: 18px;
-    margin: 0;
+font-size: 18px;
+margin: 0;
 }
 
 
 /* コンテンツ */
 .content {
-    background-color: white;
-    margin: 20px 30px;
-    padding: 25px;
-    border-radius: 10px;
+background-color: white;
+margin: 20px 30px;
+padding: 25px;
+border-radius: 10px;
 }
 
 .content h2 {
-    color: #0066cc;
-    border-bottom: 2px solid #0066cc;
-    padding-bottom: 8px;
+color: #0066cc;
+border-bottom: 2px solid #0066cc;
+padding-bottom: 8px;
 }
 
 .content p {
-    font-size: 17px;
-    line-height: 1.8;
+font-size: 17px;
+line-height: 1.8;
 }
 
 .content li {
-    margin-bottom: 10px;
-    font-size: 17px;
+margin-bottom: 10px;
+font-size: 17px;
 }
 
 .content a {
-    color: #0066cc;
-    text-decoration: none;
-    font-weight: bold;
+color: #0066cc;
+text-decoration: none;
+font-weight: bold;
 }
 
 .content a:hover {
-    color: #ff66aa;
-    text-decoration: underline;
+color: #ff66aa;
+text-decoration: underline;
 }
 
 
 /* スマホ用レイアウト */
 
 @media screen and (max-width: 600px) {
-    html {
-        background-image: url("./background2.jpg");
-    }
+html {
+background-image: url("./background2.jpg");
 }
-    /* プロフィール */
-    .profile {
-        display: flex;
-        align-items: center;
-        padding: 20px;
-    }
+}
+/* プロフィール */
+.profile {
+display: flex;
+align-items: center;
+padding: 20px;
+}
 
-    .profile img {
-        width: 65px;
-        height: 65px;
-    }
+.profile img {
+width: 65px;
+height: 65px;
+}
 
-    .profile-text {
-        margin-left: 15px;
-    }
+.profile-text {
+margin-left: 15px;
+}
 
-    .profile-text h1 {
-        font-size: 24px;
-        margin-bottom: 4px;
-    }
+.profile-text h1 {
+font-size: 24px;
+margin-bottom: 4px;
+}
 
-    .profile-text p {
-        font-size: 13px;
-    }
+.profile-text p {
+font-size: 13px;
+}
 
 
-    /* コンテンツ */
-    .content {
-        margin: 15px;
-        padding: 20px;
-        border-radius: 10px;
-    }
+/* コンテンツ */
+.content {
+margin: 15px;
+padding: 20px;
+border-radius: 10px;
+}
 
-    .content h2 {
-        font-size: 20px;
-        padding-bottom: 6px;
-        margin-top: 0;
-    }
+.content h2 {
+font-size: 20px;
+padding-bottom: 6px;
+margin-top: 0;
+}
 
-    .content p {
-        font-size: 14px;
-        line-height: 1.8;
-    }
+.content p {
+font-size: 14px;
+line-height: 1.8;
+}
 
-    .content li {
-        font-size: 14px;
-        margin-bottom: 8px;
-    }
+.content li {
+font-size: 14px;
+margin-bottom: 8px;
+}
 
-    .content a {
-        font-size: 14px;
-    }
-    @media screen and (max-width: 600px) {
-
-    /* スマホ用背景 */
-    html {
-        background-image: url("./background2.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }
-
-    /* プロフィール */
-    .profile {
-        display: flex;
-        align-items: center;
-        padding: 20px;
-    }
-
-    .profile img {
-        width: 65px;
-        height: 65px;
-    }
-
-    .profile-text {
-        margin-left: 15px;
-    }
-
-    .profile-text h1 {
-        font-size: 24px;
-        margin-bottom: 4px;
-    }
-
-    .profile-text p {
-        font-size: 13px;
-    }
-
-    /* コンテンツ */
-    .content {
-        margin: 15px;
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    .content h2 {
-        font-size: 20px;
-        padding-bottom: 6px;
-        margin-top: 0;
-    }
-
-    .content p {
-        font-size: 14px;
-        line-height: 1.8;
-    }
-
-    .content li {
-        font-size: 14px;
-        margin-bottom: 8px;
-    }
-
-    .content a {
-        font-size: 14px;
-    }
-    /* スマホの壁紙変更場所 */
+.content a {
+font-size: 14px;
+}
 @media screen and (max-width: 600px) {
-    html {
-        background-image: url("./background2.jpg") !important;
-    }
+
+/* スマホ用背景 */
+html {
+background-image: url("./background2.jpg");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+}
+
+/* プロフィール */
+.profile {
+display: flex;
+align-items: center;
+padding: 20px;
+}
+
+.profile img {
+width: 65px;
+height: 65px;
+}
+
+.profile-text {
+margin-left: 15px;
+}
+
+.profile-text h1 {
+font-size: 24px;
+margin-bottom: 4px;
+}
+
+.profile-text p {
+font-size: 13px;
+}
+
+/* コンテンツ */
+.content {
+margin: 15px;
+padding: 20px;
+border-radius: 10px;
+}
+
+.content h2 {
+font-size: 20px;
+padding-bottom: 6px;
+margin-top: 0;
+}
+
+.content p {
+font-size: 14px;
+line-height: 1.8;
+}
+
+.content li {
+font-size: 14px;
+margin-bottom: 8px;
+}
+
+.content a {
+font-size: 14px;
+}
+/* スマホの壁紙変更場所 */
+@media screen and (max-width: 600px) {
+html {
+background-image: url("./background2.jpg") !important;
+}
 }
 /* 右上のボタン */
 .top-buttons {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
+position: fixed;
+top: 20px;
+right: 20px;
+z-index: 1000;
 
-    display: flex;
-    gap: 8px;
-    align-items: center;
+display: flex;
+gap: 8px;
+align-items: center;
 }
 
 /* ログインボタン */
 .auth-button {
-    padding: 10px 16px;
-    border: 1px solid #007bff;
-    border-radius: 8px;
-    background: white;
-    color: #007bff;
-    cursor: pointer;
-    font-size: 16px;
+padding: 10px 16px;
+border: 1px solid #007bff;
+border-radius: 8px;
+background: white;
+color: #007bff;
+cursor: pointer;
+font-size: 16px;
 }
