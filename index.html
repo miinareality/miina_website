@@ -1,30 +1,21 @@
 <!DOCTYPE html>
 <html lang="jp">
+
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ミィナのWebサイト</title>
-
-    <link rel="icon" type="image/x-icon" href="/miina_website/favicon.ico">
-    <link rel="icon" type="image/png" href="/miina_website/favicon.ico">
-    <link rel="apple-touch-icon" href="/miina_website/favicon.ico">
-
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ミィナのWebサイト</title>
+<link rel="icon" type="image/x-icon" href="/miina_website/favicon.ico">
+<link rel="icon" type="image/png" href="/miina_website/favicon.ico">
+<link rel="apple-touch-icon" href="/miina_website/favicon.ico">
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+<button id="menuButton" class="menu-button" onclick="toggleMenu()">☰ メニュー</button>
 
-<!-- メニューボタン -->
-<button id="menuButton" class="menu-button" onclick="toggleMenu()">
-    ☰ メニュー
-</button>
-
-<!-- 右側メニュー -->
 <nav id="sideMenu" class="side-menu">
-    <h2>メニュー</h2>
-
+<h2>メニュー</h2>
 <a href="./">🏠 ホーム</a>
 <a href="2nd/dice.html">🎲 ダイス</a>
 <a href="2nd/member.html">🙍 バッチ取得者への待遇</a>
@@ -34,109 +25,54 @@
 
 <script>
 function toggleMenu() {
-    const menu = document.getElementById("sideMenu");
-
-    menu.classList.toggle("open");
+const menu = document.getElementById("sideMenu");
+menu.classList.toggle("open");
 }
-
 document.querySelectorAll("#sideMenu a").forEach(link => {
-    link.addEventListener("click", function() {
-        document.getElementById("sideMenu").classList.remove("open");
-    });
+link.addEventListener("click", function() {
+document.getElementById("sideMenu").classList.remove("open");
+});
 });
 </script>
 
-<!-- プロフィール -->
-<div class="profile">
-    <img src="/miina_website/icon.png" alt="アイコン">
+<div class="profile"><img src="/miina_website/icon.png" alt="アイコン"><div class="profile-text">
+<h1>ミィナ</h1><p>皆さんこんにちは！ミィナと申します！</p></div></div>
 
-    <div class="profile-text">
-        <h1>ミィナ</h1>
-        <p>皆さんこんにちは！ミィナと申します！</p>
-    </div>
-</div>
-
-<!-- 自己紹介 -->
-<section class="content">
-    <h2>自己紹介</h2>
-
-    <p>
-        自分はRealityを主に活動しているバ美肉です！
-        暇な時に配信するという形を行っておりますのでよろしくお願いします！
-    </p>
-    <p>
-        兄がいないときに配信をいたしますので宜しくお願いします☆
-        8/7にReality登録　8/8に初配信
-    </p>
+<section class="content"><h2>自己紹介</h2>
+<p>自分はRealityを主に活動しているバ美肉です！暇な時に配信するという形を行っておりますのでよろしくお願いします！</p>
+<p>兄がいないときに配信をいたしますので宜しくお願いします☆8/7にReality登録　8/8に初配信</p>
 </section>
 
 <!-- 活動内容 -->
 <section class="content">
-    <h2>活動内容</h2>
-
-    <ul>
-        
-        <li>ゲーム配信（予定）</li>
-
-        <li>Webサイトの編集（たまにね）</li>
-
-        
-    </ul>
+<h2>活動内容</h2>
+<ul>
+<li>ゲーム配信（予定）</li>
+<li>Webサイトの編集（たまにね）</li>
+</ul>
 </section>
     
 <!-- アカウント -->
 <section class="content">
-    <h2>リンク集</h2>
-    
-    <ul>    
-    
-        <li>
-            <a href="https://reality.app/profile/669b90c2?adj_t=8ogcewh_z9yhix5" target="_blank" rel="noopener noreferrer">
-                Reality
-            </a>
-        </li>
-         <li>
-            <a href="https://www.youtube.com/@miina_reality" target="_blank" rel="noopener noreferrer">
-                YouTubeアカウント
-            </a>
-        </li>
-        <li>
-            <a href="https://x.com/Miina_himajin_" target="_blank" rel="noopener noreferrer">
-                Xアカウント
-            </a>
-        </li>
-        <li>
-            <a href="https://x.com/miina_himajin" target="_blank" rel="noopener noreferrer">
-                Xサブアカウント
-            </a>
-        </li>
-        <li>
-            <a href="https://discord.gg/mbYHTpaKBD" target="_blank" rel="noopener noreferrer">
-                Discordサーバー：整備中
-            </a>
-        </li>
-    </ul>
-    
+<h2>リンク集</h2>
+<ul>
+<li><a href="https://reality.app/profile/669b90c2?adj_t=8ogcewh_z9yhix5" target="_blank" rel="noopener noreferrer">Reality</a</li>
+<li><a href="https://www.youtube.com/@miina_reality" target="_blank" rel="noopener noreferrer">YouTubeアカウント</a></li>
+<li><a href="https://x.com/Miina_himajin_" target="_blank" rel="noopener noreferrer">Xアカウント</a></li>
+<li><a href="https://x.com/miina_himajin" target="_blank" rel="noopener noreferrer">Xサブアカウント</a></li>
+<li><a href="https://discord.gg/mbYHTpaKBD" target="_blank" rel="noopener noreferrer">Discordサーバー：整備中</a></li>
+</ul>
 </section>
     
 <!-- 訪問者数 -->
 <section class="content">
-    <h2>訪問者数</h2>
-    <p>
-        ADBlockを適応しているとこちらは表示されません。見たい場合は解除してからご覧ください。訪問者数は反映されるまで最大3時間かかる見込みです。ご了承ください。
-    </p>
-    <iframe
-        src="https://miina-reality-goatcounter.goatcounter.com/counter//miina_website/.html"
-        style="border: 0; width: 200px; height: 80px;"
-        title="訪問者数">
-    </iframe>
+<h2>訪問者数</h2>
+<p>ADBlockを適応しているとこちらは表示されません。見たい場合は解除してからご覧ください。訪問者数は反映されるまで最大3時間かかる見込みです。ご了承ください。</p>
+<iframe src="https://miina-reality-goatcounter.goatcounter.com/counter//miina_website/.html"style="border: 0; width: 200px; height: 80px;"title="訪問者数"></iframe>
 </section>
 
 <!-- GoatCounter -->
-<script
-    data-goatcounter="https://miina-reality-goatcounter.goatcounter.com/count"
-    async
-    src="https://gc.zgo.at/count.js">
+<script data-goatcounter="https://miina-reality-goatcounter.goatcounter.com/count" async src="https://gc.zgo.at/count.js">
 </script>
     
 </body>
