@@ -131,11 +131,15 @@ fetch("dicelog.json")
         const history = document.getElementById("diceHistory");
 
         data.history.forEach(dice => {
-            const button = document.createElement("button");
-            button.textContent = dice;
-            history.appendChild(button);
-        });
+    const button = document.createElement("button");
+    button.textContent = dice;
+
+    button.addEventListener("click", function() {
+        document.getElementById("diceInput").value = dice;
     });
+
+    history.appendChild(button);
+});
 </script>
 </body>
 </html>
