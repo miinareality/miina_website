@@ -21,6 +21,11 @@ supabaseScript.src =
 
 supabaseScript.onload = function () {
     initializeSupabase();
+   console.log("Supabaseの初期化が完了しました。");
+
+setupAuthEvents();
+checkLoginState();
+updateAuthButton();
 };
 
 supabaseScript.onerror = function () {
@@ -61,10 +66,54 @@ function initializeSupabase() {
         SUPABASE_PUBLISHABLE_KEY
     );
 
-    console.log("Supabaseの初期化が完了しました。");
+/* 共通ログイン状態ボタン */
 
-    setupAuthEvents();
-    checkLoginState();
+async function updateAuthButton() {
+
+    const authButton = document.getElementById("authButton");
+
+    if (!authButton || !supabaseClient) {
+        return;
+    }
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session) {
+
+        authButton.textContent = "👤 ログイン中";
+
+        authButton.onclick = async function () {
+
+            const result = confirm(
+                "ログアウトしますか？"
+            );
+
+            if (!result) {
+                return;
+            }
+
+            const { error } =
+                await supabaseClient.auth.signOut();
+
+            if (error) {
+                console.error("ログアウトエラー:", error);
+                return;
+            }
+
+            location.reload();
+        };
+
+    } else {
+
+        authButton.textContent = "🔐 ログイン";
+
+        authButton.onclick = function () {
+            window.location.href = "2nd/login.html";
+        };
+    }
+}
 }
 
 
