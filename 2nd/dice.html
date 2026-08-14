@@ -284,9 +284,7 @@ async function loadDiceHistory() {
     });
 }
 
-/* =========================
-   ダイスロール
-   ========================= */
+/* ダイスロール */
 
 function rollDice() {
     const input = document.getElementById("diceInput").value.trim();
@@ -357,9 +355,7 @@ function rollDice() {
     saveDiceHistory(input);
 }
 
-/* =========================
-   履歴クリア
-   ========================= */
+/* 履歴クリア */
 
 function clearDiceResults() {
     // ダイス結果ログのCookieを削除
@@ -373,17 +369,13 @@ function clearDiceHistory() {
     loadDiceHistory();
 }
 
-/* =========================
-   リセット
-   ========================= */
+/* リセット */
 
 function resetDice() {
     document.getElementById("diceResult").innerHTML = "";
 }
 
-/* =========================
-   メニュー
-   ========================= */
+/* メニュー */
 
 function toggleMenu() {
     const menu = document.getElementById("sideMenu");
@@ -396,9 +388,7 @@ document.querySelectorAll("#sideMenu a").forEach(link => {
     });
 });
 
-/* =========================
-   ページ読み込み時
-   ========================= */
+/* ページ読み込み時 */
 
 document.addEventListener("DOMContentLoaded", function() {
     displayDiceResults();
