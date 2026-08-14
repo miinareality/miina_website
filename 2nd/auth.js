@@ -294,9 +294,7 @@ function setupAuthEvents() {
     }
 
 
-    /* -----------------------------
-       ログイン状態の変化を監視
-       ----------------------------- */
+    /* ログイン状態の変化を監視 */
 
     supabaseClient.auth.onAuthStateChange(
         function (event, session) {
@@ -321,9 +319,7 @@ function setupAuthEvents() {
 }
 
 
-/* ========================================
-   ログイン状態を確認
-   ======================================== */
+/* ログイン状態を確認 */
 
 async function checkLoginState() {
 
@@ -371,9 +367,7 @@ async function checkLoginState() {
 }
 
 
-/* ========================================
-   ログアウト
-   ======================================== */
+/* ログアウト */
 
 async function logout() {
 
@@ -421,9 +415,7 @@ async function logout() {
 }
 
 
-/* ========================================
-   Supabaseエラーを日本語に変換
-   ======================================== */
+/* Supabaseエラーを日本語に変換 */
 
 function getAuthErrorMessage(error) {
 
@@ -487,3 +479,52 @@ function getAuthErrorMessage(error) {
     return "エラーが発生しました：" + message;
 
 }
+/* Supabase設定 */
+
+const SUPABASE_URL =
+    "https://xbactiinrfyjdxidlxqug.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "あなたのPublishable key";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+
+/* ログイン状態を確認 */
+
+async function checkLoginStatus() {
+
+    const {
+        data: { session },
+        error
+    } = await supabaseClient.auth.getSession();
+
+    if (error) {
+        console.error("ログイン状態の取得に失敗しました:", error);
+        return null;
+    }
+
+    return session;
+}
+supabaseClient.auth.onAuthStateChange(
+    function (event, session) {
+
+        console.log(
+            "認証状態が変化しました:",
+            event
+        );
+
+        if (session) {
+            console.log(
+                "ログイン中:",
+                session.user.email
+            );
+        } else {
+            console.log("未ログイン");
+        }
+
+    }
+);
