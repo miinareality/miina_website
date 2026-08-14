@@ -122,14 +122,18 @@ document.querySelectorAll("#sideMenu a").forEach(link => {
     });
 });
 </script>
+<div id="diceHistory"></div>
 <script>
 fetch("dicelog.json")
     .then(response => response.json())
     .then(data => {
-        console.log(data.history);
-    })
-    .catch(error => {
-        console.error("dicelog.jsonの読み込みに失敗しました:", error);
+        const history = document.getElementById("diceHistory");
+
+        data.history.forEach(dice => {
+            const button = document.createElement("button");
+            button.textContent = dice;
+            history.appendChild(button);
+        });
     });
 </script>
 </body>
