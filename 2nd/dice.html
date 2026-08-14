@@ -123,7 +123,11 @@ document.querySelectorAll("#sideMenu a").forEach(link => {
 });
 </script>
 <p>開発中の要素です。</p>
-<div id="diceHistory"></div>
+<div id="diceHistory">
+    <!-- JSONからダイスボタンを自動生成 -->
+</div>
+        
+    <!-- 下の奴をテキストボックスに移動させるscript -->
 <script>
 fetch("dicelog.json")
     .then(response => response.json())
@@ -131,15 +135,20 @@ fetch("dicelog.json")
         const history = document.getElementById("diceHistory");
 
         data.history.forEach(dice => {
-    const button = document.createElement("button");
-    button.textContent = dice;
+            const button = document.createElement("button");
 
-    button.addEventListener("click", function() {
-        document.getElementById("diceInput").value = dice;
+            button.textContent = dice;
+
+            button.addEventListener("click", function() {
+                document.getElementById("diceInput").value = dice;
+            });
+
+            history.appendChild(button);
+        });
+    })
+    .catch(error => {
+        console.error("JSONの読み込みに失敗しました:", error);
     });
-
-    history.appendChild(button);
-});
 </script>
 </body>
 </html>
