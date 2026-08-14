@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -19,11 +20,11 @@
 <nav id="sideMenu" class="side-menu">
     <h2>メニュー</h2>
 
-<a href="../">🏠 ホーム</a>
-<a href="dice.html">🎲 ダイス</a>
-<a href="member.html">🙍 バッチ取得者への待遇</a>
-<a href="materials.html">🖼 使用素材</a>
-<a href="business.html">💼 企業様への連絡</a>
+    <a href="../">🏠 ホーム</a>
+    <a href="dice.html">🎲 ダイス</a>
+    <a href="member.html">🙍 バッチ取得者への待遇</a>
+    <a href="materials.html">🖼 使用素材</a>
+    <a href="business.html">💼 企業様への連絡</a>
 </nav>
 
 <section class="content">
@@ -40,7 +41,227 @@
     <div id="diceResult"></div>
 </section>
 
+<!-- ダイス結果ログ -->
+<section class="content">
+    <h3>📜 ダイス結果ログ（最大10件）</h3>
+    <div id="diceResultHistory"></div>
+</section>
+
+<!-- ダイス式ログ -->
+<section class="content">
+    <h3>🎲 ダイス式ログ（最大6件）</h3>
+    <div id="diceHistory">
+        <!-- JSON + Cookieからダイスボタンを自動生成 -->
+    </div>
+</section>
+
 <script>
+/* =========================
+   Cookie関連
+   ========================= */
+
+function setCookie(name, value, days = 365) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+
+    document.cookie =
+        name + "=" + encodeURIComponent(value) +
+        ";expires=" + expires.toUTCString() +
+        ";path=/;SameSite=Lax";
+}
+
+function getCookie(name) {
+    const cookies = document.cookie.split("; ");
+
+    for (const cookie of cookies) {
+        const separator = cookie.indexOf("=");
+
+        if (separator === -1) {
+            continue;
+        }
+
+        const key = cookie.substring(0, separator);
+        const value = cookie.substring(separator + 1);
+
+        if (key === name) {
+            return decodeURIComponent(value);
+        }
+    }
+
+    return null;
+}
+
+/* =========================
+   ダイス結果ログ
+   最大10件
+   ========================= */
+
+function getDiceResults() {
+    const cookie = getCookie("diceResults");
+
+    if (!cookie) {
+        return [];
+    }
+
+    try {
+        const data = JSON.parse(cookie);
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error("ダイス結果ログの読み込みに失敗しました:", error);
+        return [];
+    }
+}
+
+function saveDiceResult(input, total) {
+    let results = getDiceResults();
+
+    const newResult = {
+        expression: input,
+        total: total
+    };
+
+    // 新しいものを先頭へ
+    results.unshift(newResult);
+
+    // 最大10件
+    results = results.slice(0, 10);
+
+    setCookie("diceResults", JSON.stringify(results));
+
+    displayDiceResults();
+}
+
+function displayDiceResults() {
+    const container = document.getElementById("diceResultHistory");
+    container.innerHTML = "";
+
+    const results = getDiceResults();
+
+    results.forEach(item => {
+        const button = document.createElement("button");
+
+        button.textContent = `${item.expression} → ${item.total}`;
+
+        // 結果ログを押すと、そのダイス式を入力欄へ入れる
+        button.addEventListener("click", function() {
+            document.getElementById("diceInput").value = item.expression;
+        });
+
+        container.appendChild(button);
+    });
+}
+
+/* =========================
+   ダイス式ログ
+   Cookie側は最大3件
+   JSON側の3件と合わせて最大6件
+   ========================= */
+
+function getDiceHistory() {
+    const cookie = getCookie("diceHistory");
+
+    if (!cookie) {
+        return [];
+    }
+
+    try {
+        const data = JSON.parse(cookie);
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error("ダイス式ログの読み込みに失敗しました:", error);
+        return [];
+    }
+}
+
+function saveDiceHistory(input) {
+    let history = getDiceHistory();
+
+    // 同じダイス式があれば一旦削除
+    history = history.filter(dice => dice !== input);
+
+    // 新しいものを先頭へ
+    history.unshift(input);
+
+    // Cookie側は最大3件
+    history = history.slice(0, 3);
+
+    setCookie("diceHistory", JSON.stringify(history));
+
+    loadDiceHistory();
+}
+
+/* =========================
+   JSON + Cookieのダイス式を表示
+   ========================= */
+
+async function loadDiceHistory() {
+    const historyContainer = document.getElementById("diceHistory");
+
+    // 一旦表示を消す
+    historyContainer.innerHTML = "";
+
+    let jsonHistory = [];
+
+    try {
+        const response = await fetch("dicelog.json");
+
+        if (!response.ok) {
+            throw new Error("JSONの読み込みに失敗しました");
+        }
+
+        const data = await response.json();
+
+        if (Array.isArray(data.history)) {
+            jsonHistory = data.history;
+        }
+    } catch (error) {
+        console.error("dicelog.jsonの読み込みに失敗しました:", error);
+    }
+
+    // Cookie側の履歴
+    const cookieHistory = getDiceHistory();
+
+    // JSONを優先し、重複を除いて最大6件
+    const combinedHistory = [];
+
+    for (const dice of jsonHistory) {
+        if (!combinedHistory.includes(dice)) {
+            combinedHistory.push(dice);
+        }
+
+        if (combinedHistory.length >= 6) {
+            break;
+        }
+    }
+
+    for (const dice of cookieHistory) {
+        if (!combinedHistory.includes(dice)) {
+            combinedHistory.push(dice);
+        }
+
+        if (combinedHistory.length >= 6) {
+            break;
+        }
+    }
+
+    // ボタンを作成
+    combinedHistory.forEach(dice => {
+        const button = document.createElement("button");
+
+        button.textContent = dice;
+
+        button.addEventListener("click", function() {
+            document.getElementById("diceInput").value = dice;
+        });
+
+        historyContainer.appendChild(button);
+    });
+}
+
+/* =========================
+   ダイスロール
+   ========================= */
+
 function rollDice() {
     const input = document.getElementById("diceInput").value.trim();
     const result = document.getElementById("diceResult");
@@ -104,15 +325,24 @@ function rollDice() {
         ${details.join("")}
         <p><strong>合計：${total}</strong></p>
     `;
-saveDiceResult(input, total);
-saveDiceHistory(input);
+
+    // 正常にダイスを振り終わったあとでCookieへ保存
+    saveDiceResult(input, total);
+    saveDiceHistory(input);
 }
+
+/* =========================
+   リセット
+   ========================= */
 
 function resetDice() {
     document.getElementById("diceResult").innerHTML = "";
 }
-</script>
-<script>
+
+/* =========================
+   メニュー
+   ========================= */
+
 function toggleMenu() {
     const menu = document.getElementById("sideMenu");
     menu.classList.toggle("open");
@@ -123,34 +353,16 @@ document.querySelectorAll("#sideMenu a").forEach(link => {
         document.getElementById("sideMenu").classList.remove("open");
     });
 });
+
+/* =========================
+   ページ読み込み時
+   ========================= */
+
+document.addEventListener("DOMContentLoaded", function() {
+    displayDiceResults();
+    loadDiceHistory();
+});
 </script>
-<p>開発中の要素です。</p>
-<div id="diceHistory">
-    <!-- JSONからダイスボタンを自動生成 -->
-</div>
-        
-    <!-- 下の奴をテキストボックスに移動させるscript -->
-<script>
-fetch("dicelog.json")
-    .then(response => response.json())
-    .then(data => {
-        const history = document.getElementById("diceHistory");
 
-        data.history.forEach(dice => {
-            const button = document.createElement("button");
-
-            button.textContent = dice;
-
-            button.addEventListener("click", function() {
-                document.getElementById("diceInput").value = dice;
-            });
-
-            history.appendChild(button);
-        });
-    })
-    .catch(error => {
-        console.error("JSONの読み込みに失敗しました:", error);
-    });
-</script>
 </body>
 </html>
