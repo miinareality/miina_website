@@ -130,7 +130,7 @@ document.querySelectorAll("#sideMenu a").forEach(link => {
     <!-- 下の奴をテキストボックスに移動させるscript -->
 <script>
 fetch("dicelog.json")
-    .then(response => response.json())
+    .then(response => response.dicelog.json())
     .then(data => {
         const history = document.getElementById("diceHistory");
 
