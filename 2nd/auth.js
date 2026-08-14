@@ -5,7 +5,7 @@
 /* Supabase設定 */
 
 // SupabaseのプロジェクトURL
-const SUPABASE_URL = "https://xbactiinrfyjdxidlxqug.supabase.co";
+const SUPABASE_URL = "https://xbactiinrfyjdixdlquq.supabase.co/rest/v1/";
 
 // Supabaseの「公開可能なキー」をここに貼り付ける
 // sb_publishable_... から始まるキーを使用してください。
