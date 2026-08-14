@@ -122,5 +122,15 @@ document.querySelectorAll("#sideMenu a").forEach(link => {
     });
 });
 </script>
+<script>
+fetch("dicelog.json")
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.history);
+    })
+    .catch(error => {
+        console.error("dicelog.jsonの読み込みに失敗しました:", error);
+    });
+</script>
 </body>
 </html>
