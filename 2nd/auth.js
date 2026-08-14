@@ -162,7 +162,7 @@ function setupAuthEvents() {
 
 
                 /*
-                 * 少し待ってからdebug.htmlへ移動
+                 * 少し待ってからindex.htmlへ移動
                  */
                 setTimeout(function () {
 
