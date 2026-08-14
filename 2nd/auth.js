@@ -157,7 +157,7 @@ function setupAuthEvents() {
 
 
                 showAuthMessage(
-                    "ログインしました。debug.htmlへ移動します。"
+                    "ログインしました。index.htmlへ移動します。"
                 );
 
 
@@ -166,7 +166,7 @@ function setupAuthEvents() {
                  */
                 setTimeout(function () {
 
-                    window.location.href = "../debug.html";
+                    window.location.href = "../index.html";
 
                 }, 800);
 
