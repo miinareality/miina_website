@@ -316,3 +316,28 @@ display: flex;
 gap: 8px;
 align-items: center;
 }
+
+/* アカウント状態表示 */
+#account-status {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    width: 240px;
+    padding: 15px;
+    background: white;
+    border: 1px solid #007bff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#account-status h3 {
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #007bff;
+    color: #007bff;
+}
+
+#account-status-content {
+    line-height: 1.7;
+    word-break: break-word;
+}
