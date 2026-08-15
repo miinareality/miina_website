@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta cahtset="UTF=8">
-    <title>debug - miina web site</title>
-    <link rel="stylesheet" href="style.css">
+<head>
+<meta cahtset="UTF=8">
+<title>debug - miina web site</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div>
 <p> ❕　注意　このページは通常では表示されないようにしています。
 このページで行う行動で受ける損害は、補償しませんのでよろしくお願いします。</p>
 <!-- メニューボタン -->
-<button id="menuButton" class="menu-button" onclick="toggleMenu()">    ☰ メニュー</button>
+<button id="menuButton" class="menu-button" onclick="toggleMenu()">☰ メニュー</button>
 </div>
 <section class="content">
 <p><a href="https://miinareality.github.io/miina_website/2nd/login.html" target="_blank" > 2nd login html</a>
@@ -34,20 +34,20 @@
 
 <script>
 function toggleMenu() {
-    const menu = document.getElementById("sideMenu");
-    menu.classList.toggle("open");
+const menu = document.getElementById("sideMenu");
+menu.classList.toggle("open");
 }
 
 document.querySelectorAll("#sideMenu a").forEach(link => {
-    link.addEventListener("click", function() {
-        document.getElementById("sideMenu").classList.remove("open");
-    });
+link.addEventListener("click", function() {
+document.getElementById("sideMenu").classList.remove("open");
+});
 });
 </script>
 <script>
-    setInterval(() => {
-        location.reload();
-    }, 5 * 1000);
+setInterval(() => {
+location.reload();
+}, 5 * 1000);
 </script>
 <script src="2nd/auth.js"></script>
 </body>
