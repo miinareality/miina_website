@@ -345,22 +345,30 @@ signupButton.disabled = false;
 
 /* ログイン状態の変化を監視 */
 
-supabaseClient.auth.onAuthStateChange(
-function (event, session) {
-
-console.log(
-"認証状態が変化しました:",
-event
-);
-
 if (session && session.user) {
 
-console.log(
-"ログイン中のユーザー:",
-session.user.email
-);
+    console.log(
+        "現在ログインしています:",
+        session.user.email
+    );
+
+    showAuthMessage(
+        "現在ログイン中です：" +
+        session.user.email
+    );
 
 } else {
+
+    console.log(
+        "現在ログインしているユーザーはいません。"
+    );
+
+}
+
+// debug.htmlのアカウント状態を更新
+if (typeof updateDebugAccountStatus === "function") {
+    updateDebugAccountStatus(session);
+}
 
 console.log("未ログイン");
 
