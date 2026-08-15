@@ -360,12 +360,18 @@ console.log(
 session.user.email
 );
 
+} else {
+
+console.log("未ログイン");
+
 }
 
+// debug.htmlのアカウント状態表示を更新
+if (typeof updateDebugAccountStatus === "function") {
+updateDebugAccountStatus(session);
+}
 }
 );
-
-}
 
 
 /* ログイン状態を確認 */
