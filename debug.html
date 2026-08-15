@@ -56,5 +56,41 @@ location.reload();
 }, 5 * 1000);
 </script>
 <script src="2nd/auth.js"></script>
+<script>
+function updateAccountStatus() {
+const statusElement = document.getElementById("account-status-content");
+
+if (!statusElement) return;
+
+/*
+ * 現在のログイン情報を取得
+ * ↓ここは現在使っているauth.jsの保存方法に合わせます
+ */
+const currentUser = localStorage.getItem("currentUser");
+
+if (!currentUser) {
+statusElement.innerHTML = `
+<div>🔓 <strong>未ログイン</strong></div>
+<div style="margin-top: 8px;">
+ログインしていません。
+</div>
+<div style="margin-top: 10px;">
+<a href="login.html">ログイン</a>
+</div>
+`;
+return;
+}
+
+statusElement.innerHTML = `
+<div>🔐 <strong>ログイン中</strong></div>
+<div style="margin-top: 8px;">
+アカウント：<br>
+${currentUser}
+</div>
+`;
+}
+
+updateAccountStatus();
+</script>
 </body>
 </html>
