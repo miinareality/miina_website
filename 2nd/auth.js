@@ -561,21 +561,29 @@ return null;
 return session;
 }
 supabaseClient.auth.onAuthStateChange(
-function (event, session) {
+    function (event, session) {
 
-console.log(
-"認証状態が変化しました:",
-event
-);
+        console.log(
+            "認証状態が変化しました:",
+            event
+        );
 
-if (session) {
-console.log(
-"ログイン中:",
-session.user.email
-);
-} else {
-console.log("未ログイン");
-}
+        if (session && session.user) {
 
-}
+            console.log(
+                "ログイン中のユーザー:",
+                session.user.email
+            );
+
+        } else {
+
+            console.log("未ログイン");
+
+        }
+
+        // debug.htmlのアカウント状態を更新
+        if (typeof updateDebugAccountStatus === "function") {
+            updateDebugAccountStatus(session);
+        }
+    }
 );
