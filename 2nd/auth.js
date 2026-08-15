@@ -368,52 +368,54 @@ if (session && session.user) {
 // debug.htmlのアカウント状態を更新
 if (typeof updateDebugAccountStatus === "function") {
     updateDebugAccountStatus(session);
-}
-
-console.log("未ログイン");
-
-}
-
-// debug.htmlのアカウント状態表示を更新
-if (typeof updateDebugAccountStatus === "function") {
-updateDebugAccountStatus(session);
-}
-}
-);
-
-
 /* ログイン状態を確認 */
 
 async function checkLoginState() {
 
-if (!supabaseClient) {
-return;
+    if (!supabaseClient) {
+        return;
+    }
+
+    try {
+
+        const {
+            data: { session }
+        } = await supabaseClient.auth.getSession();
+
+        if (session && session.user) {
+
+            console.log(
+                "現在ログインしています:",
+                session.user.email
+            );
+
+            showAuthMessage(
+                "現在ログイン中です：" +
+                session.user.email
+            );
+
+        } else {
+
+            console.log(
+                "現在ログインしているユーザーはいません。"
+            );
+
+        }
+
+        // debug.htmlのアカウント状態を更新
+        if (typeof updateDebugAccountStatus === "function") {
+            updateDebugAccountStatus(session);
+        }
+
+    } catch (error) {
+
+        console.error(
+            "ログイン状態の確認に失敗しました:",
+            error
+        );
+
+    }
 }
-
-
-try {
-
-const {
-data: { session }
-} = await supabaseClient.auth.getSession();
-
-
-if (session && session.user) {
-
-console.log(
-"現在ログインしています:",
-session.user.email
-);
-
-showAuthMessage(
-"現在ログイン中です：" +
-session.user.email
-);
-
-} else {
-
-console.log(
-"現在ログインしているユーザーはいません。"
 );
 
 }
