@@ -203,9 +203,9 @@
 
                     if (error) throw error;
 
-                    showMessage("ログインしました。debug.htmlへ移動します。");
+                    showMessage("ログインしました。ホームへ移動します。");
                     setTimeout(() => {
-                        window.location.href = "../debug.html";
+                        window.location.href = "../index.html";
                     }, 400);
                 } catch (error) {
                     showMessage(formatError(error), true);
