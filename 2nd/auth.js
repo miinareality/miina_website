@@ -1,9 +1,9 @@
 /* =========================================================
    auth.js
-   Supabase authentication core
+   Supabase authentication core.
 
    認証UIはここには置きません。
-   login.html / debug.html など各ページ側のJSから呼び出します。
+   login.html と debug.html からだけ読み込みます。
    ========================================================= */
 
 const SUPABASE_URL = "https://xbactiinrfyjdixdlquq.supabase.co";
@@ -17,13 +17,24 @@ function loadSupabase() {
         return Promise.resolve(window.supabase);
     }
 
-    if (supabaseLoadPromise) return supabaseLoadPromise;
+    if (supabaseLoadPromise) {
+        return supabaseLoadPromise;
+    }
 
     supabaseLoadPromise = new Promise((resolve, reject) => {
         const existing = document.querySelector('script[data-miina-supabase="true"]');
+
         if (existing) {
-            existing.addEventListener("load", () => resolve(window.supabase), { once: true });
-            existing.addEventListener("error", () => reject(new Error("Supabaseライブラリの読み込みに失敗しました。")), { once: true });
+            existing.addEventListener("load", () => {
+                if (window.supabase?.createClient) {
+                    resolve(window.supabase);
+                } else {
+                    reject(new Error("Supabaseライブラリを利用できません。"));
+                }
+            }, { once: true });
+            existing.addEventListener("error", () => {
+                reject(new Error("Supabaseライブラリの読み込みに失敗しました。"));
+            }, { once: true });
             return;
         }
 
@@ -38,7 +49,9 @@ function loadSupabase() {
                 reject(new Error("Supabaseライブラリを利用できません。"));
             }
         };
-        script.onerror = () => reject(new Error("Supabaseライブラリの読み込みに失敗しました。"));
+        script.onerror = () => {
+            reject(new Error("Supabaseライブラリの読み込みに失敗しました。"));
+        };
         document.head.appendChild(script);
     });
 
@@ -46,7 +59,9 @@ function loadSupabase() {
 }
 
 async function initializeSupabase() {
-    if (supabaseClient) return supabaseClient;
+    if (supabaseClient) {
+        return supabaseClient;
+    }
 
     if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
         throw new Error("Supabaseの設定がありません。");
@@ -86,9 +101,11 @@ async function signOut() {
 
 async function watchAuthState(callback) {
     const client = await initializeSupabase();
-    const { data } = client.auth.onAuthStateChange((event, session) => {
+    const { data, error } = client.auth.onAuthStateChange((event, session) => {
         callback(event, session);
     });
+
+    if (error) throw error;
     return data.subscription;
 }
 

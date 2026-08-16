@@ -56,47 +56,7 @@ setInterval(() => {
 location.reload();
 }, 120 * 1000);
 </script>
-<script>
-function updateDebugAccountStatus(session) {
-const statusElement =
-document.getElementById("account-status-content");
 
-if (!statusElement) return;
-
-if (session && session.user) {
-statusElement.innerHTML = `
-<div>🔐 <strong>ログイン中</strong></div>
-
-<div style="margin-top: 8px;">
-<strong>メールアドレス</strong><br>
-${session.user.email}
-</div>
-
-<div style="margin-top: 8px;">
-<strong>ユーザーID</strong><br>
-${session.user.id}
-</div>
-
-<div style="margin-top: 8px;">
-<strong>認証状態</strong><br>
-正常
-</div>
-`;
-} else {
-statusElement.innerHTML = `
-<div>🔓 <strong>未ログイン</strong></div>
-
-<div style="margin-top: 8px;">
-現在ログインしていません。
-</div>
-
-<div style="margin-top: 10px;">
-<a href="2nd/login.html">ログイン</a>
-</div>
-`;
-}
-}
-</script>
     <script src="2nd/auth.js"></script>
     <script src="2nd/debug-auth.js"></script>
 <p style="text-align:center;"><a href="2nd/memo.html">📝 メモ帳</a></p>

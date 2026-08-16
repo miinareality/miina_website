@@ -1,59 +1,69 @@
 /* debug-auth.js
-   Login/authentication UI is intentionally enabled only on debug.html.
+   debug.html 専用のアカウント状態表示。
+   ログイン画面そのものは 2nd/login.html にあります。
 */
-document.addEventListener("DOMContentLoaded", async () => {
-    const status = document.getElementById("account-status");
-    const loginButton = document.getElementById("debug-login-button");
-    const logoutButton = document.getElementById("debug-logout-button");
-    const accountEmail = document.getElementById("debug-account-email");
 
-    const render = (session) => {
-        if (status) {
-            status.textContent = session?.user
-                ? `ログイン中：${session.user.email || "ユーザー"}`
-                : "未ログイン";
+document.addEventListener("DOMContentLoaded", async () => {
+    const statusElement = document.getElementById("account-status-content");
+    if (!statusElement) return;
+
+    const renderStatus = (session) => {
+        statusElement.replaceChildren();
+
+        const state = document.createElement("div");
+        state.innerHTML = session?.user ? "🔐 <strong>ログイン中</strong>" : "🔓 <strong>未ログイン</strong>";
+        statusElement.appendChild(state);
+
+        if (session?.user) {
+            const email = document.createElement("div");
+            email.style.marginTop = "8px";
+            email.appendChild(document.createElement("strong")).textContent = "メールアドレス";
+            email.appendChild(document.createElement("br"));
+            email.appendChild(document.createTextNode(session.user.email || "未設定"));
+            statusElement.appendChild(email);
+
+            const userId = document.createElement("div");
+            userId.style.marginTop = "8px";
+            userId.appendChild(document.createElement("strong")).textContent = "ユーザーID";
+            userId.appendChild(document.createElement("br"));
+            userId.appendChild(document.createTextNode(session.user.id || "未設定"));
+            statusElement.appendChild(userId);
+
+            const authState = document.createElement("div");
+            authState.style.marginTop = "8px";
+            authState.appendChild(document.createElement("strong")).textContent = "認証状態";
+            authState.appendChild(document.createElement("br"));
+            authState.appendChild(document.createTextNode("正常"));
+            statusElement.appendChild(authState);
+        } else {
+            const message = document.createElement("div");
+            message.style.marginTop = "8px";
+            message.textContent = "現在ログインしていません。";
+            statusElement.appendChild(message);
+
+            const login = document.createElement("div");
+            login.style.marginTop = "10px";
+            const link = document.createElement("a");
+            link.href = "2nd/login.html";
+            link.textContent = "ログイン";
+            login.appendChild(link);
+            statusElement.appendChild(login);
         }
-        if (accountEmail) {
-            accountEmail.textContent = session?.user?.email || "未ログイン";
-        }
-        if (loginButton) loginButton.style.display = session?.user ? "none" : "";
-        if (logoutButton) logoutButton.style.display = session?.user ? "" : "none";
     };
 
     try {
-        const session = await MiinaAuth.getCurrentSession();
-        render(session);
+        await MiinaAuth.initializeSupabase();
+        renderStatus(await MiinaAuth.getCurrentSession());
 
-        await MiinaAuth.onAuthStateChange((_event, session) => render(session));
+        const subscription = await MiinaAuth.watchAuthState((_event, session) => {
+            renderStatus(session);
+        });
+
+        window.addEventListener("pagehide", () => {
+            subscription?.unsubscribe?.();
+        }, { once: true });
     } catch (error) {
-        console.error(error);
-        render(null);
-    }
-
-    if (loginButton) {
-        loginButton.addEventListener("click", async () => {
-            const email = prompt("メールアドレスを入力してください");
-            if (!email) return;
-            const password = prompt("パスワードを入力してください");
-            if (!password) return;
-
-            try {
-                await MiinaAuth.signIn(email, password);
-                alert("ログインしました。");
-            } catch (error) {
-                alert(MiinaAuth.formatAuthError(error));
-            }
-        });
-    }
-
-    if (logoutButton) {
-        logoutButton.addEventListener("click", async () => {
-            try {
-                await MiinaAuth.signOut();
-                alert("ログアウトしました。");
-            } catch (error) {
-                alert(MiinaAuth.formatAuthError(error));
-            }
-        });
+        console.error("Debug authentication status error:", error);
+        statusElement.textContent = "認証状態を取得できませんでした。";
     }
 });

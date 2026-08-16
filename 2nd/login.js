@@ -1,9 +1,10 @@
 /* login.js
-   login.html 専用の認証UI処理
-   公開ページのメニュー等にはログインUIを追加しません。
+   login.html 専用の認証UI処理。
+   公開ページにはログインUIを追加しません。
 */
 
 document.addEventListener("DOMContentLoaded", async () => {
+    const form = document.getElementById("login-form");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
     const loginButton = document.getElementById("loginButton");
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const showMessage = (text, isError = false) => {
         if (!message) return;
         message.textContent = text;
-        message.style.color = isError ? "red" : "";
+        message.style.color = isError ? "#d00" : "";
     };
 
     const setButtonsDisabled = (disabled) => {
@@ -29,7 +30,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // すでにログイン済みなら現在の状態を表示します。
     try {
         const session = await MiinaAuth.getCurrentSession();
         if (session?.user) {
@@ -39,7 +39,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Session check error:", error);
     }
 
-    loginButton?.addEventListener("click", async () => {
+    form?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
         const email = emailInput?.value.trim() || "";
         const password = passwordInput?.value || "";
 
@@ -56,10 +58,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("ログイン成功:", result.user);
             showMessage("ログインしました。debug.htmlへ移動します。");
 
-            // 現段階ではログイン機能の確認場所をdebug.htmlに限定します。
             setTimeout(() => {
                 window.location.href = "../debug.html";
-            }, 700);
+            }, 500);
         } catch (error) {
             showMessage(MiinaAuth.getAuthErrorMessage(error), true);
         } finally {
@@ -80,8 +81,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         showMessage("アカウントを作成しています……");
 
         try {
-            await MiinaAuth.signUp(email, password);
-            showMessage("アカウントを作成しました。ログインをお試しください。");
+            const result = await MiinaAuth.signUp(email, password);
+            if (result?.session?.user) {
+                showMessage("アカウントを作成し、ログインしました。debug.htmlへ移動します。");
+                setTimeout(() => {
+                    window.location.href = "../debug.html";
+                }, 500);
+            } else {
+                showMessage("アカウントを作成しました。必要な場合はメールアドレスを確認してからログインしてください。");
+            }
         } catch (error) {
             showMessage(MiinaAuth.getAuthErrorMessage(error), true);
         } finally {

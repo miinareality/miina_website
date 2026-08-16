@@ -77,204 +77,167 @@
         <button class="clear-history-button" onclick="clearDiceHistory()">クリア</button>
     </div>
     <div id="diceHistory">
-        <!-- JSON + Cookieからダイスボタンを自動生成 -->
+        <!-- dicelog.json + LocalStorageからダイスボタンを自動生成 -->
     </div>
 </section>
 
 <script>
-/* Cookie関連 */
+/* =========================================================
+   ダイス履歴
+   ・ダイス結果ログ：LocalStorage 最大10件
+   ・ダイス式ログ：LocalStorage 最大3件 + dicelog.json 最大3件
+   ・旧Cookieが残っている場合は一度だけLocalStorageへ移行
+   ========================================================= */
 
-function setCookie(name, value, days = 365) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+const DICE_RESULTS_KEY = "miina_dice_results";
+const DICE_HISTORY_KEY = "miina_dice_history";
 
-    document.cookie =
-        name + "=" + encodeURIComponent(value) +
-        ";expires=" + expires.toUTCString() +
-        ";path=/;SameSite=Lax";
+function readLocalArray(key) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return [];
+        const data = JSON.parse(raw);
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error("LocalStorageの読み込みに失敗しました:", error);
+        return [];
+    }
+}
+
+function writeLocalArray(key, data, maxItems) {
+    try {
+        localStorage.setItem(key, JSON.stringify(data.slice(0, maxItems)));
+    } catch (error) {
+        console.error("LocalStorageへの保存に失敗しました:", error);
+    }
+}
+
+function removeLocal(key) {
+    try {
+        localStorage.removeItem(key);
+    } catch (error) {
+        console.error("LocalStorageの削除に失敗しました:", error);
+    }
 }
 
 function getCookie(name) {
-    const cookies = document.cookie.split("; ");
-
-    for (const cookie of cookies) {
-        const separator = cookie.indexOf("=");
-
-        if (separator === -1) {
-            continue;
-        }
-
-        const key = cookie.substring(0, separator);
-        const value = cookie.substring(separator + 1);
-
-        if (key === name) {
-            return decodeURIComponent(value);
-        }
-    }
-
-    return null;
+    const prefix = name + "=";
+    const row = document.cookie.split("; ").find(item => item.startsWith(prefix));
+    if (!row) return null;
+    return decodeURIComponent(row.slice(prefix.length));
 }
 
+function deleteCookie(name) {
+    document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax; Secure`;
+}
+
+function migrateOldDiceCookies() {
+    const migrations = [
+        ["diceResults", DICE_RESULTS_KEY, 10],
+        ["diceHistory", DICE_HISTORY_KEY, 3]
+    ];
+
+    for (const [cookieName, localKey, maxItems] of migrations) {
+        try {
+            const oldCookie = getCookie(cookieName);
+            if (oldCookie && !localStorage.getItem(localKey)) {
+                const parsed = JSON.parse(oldCookie);
+                if (Array.isArray(parsed)) {
+                    writeLocalArray(localKey, parsed, maxItems);
+                }
+            }
+            if (oldCookie !== null) deleteCookie(cookieName);
+        } catch (error) {
+            console.error(`${cookieName} の移行に失敗しました:`, error);
+        }
+    }
+}
+
+migrateOldDiceCookies();
+
 /* ダイス結果ログ 最大10件 */
-
 function getDiceResults() {
-    const cookie = getCookie("diceResults");
-
-    if (!cookie) {
-        return [];
-    }
-
-    try {
-        const data = JSON.parse(cookie);
-        return Array.isArray(data) ? data : [];
-    } catch (error) {
-        console.error("ダイス結果ログの読み込みに失敗しました:", error);
-        return [];
-    }
+    return readLocalArray(DICE_RESULTS_KEY).slice(0, 10);
 }
 
 function saveDiceResult(input, total) {
-    let results = getDiceResults();
-
-    const newResult = {
-        expression: input,
-        total: total
-    };
-
-    // 新しいものを先頭へ
-    results.unshift(newResult);
-
-    // 最大10件
-    results = results.slice(0, 10);
-
-    setCookie("diceResults", JSON.stringify(results));
-
+    const results = getDiceResults();
+    results.unshift({ expression: input, total });
+    writeLocalArray(DICE_RESULTS_KEY, results, 10);
     displayDiceResults();
 }
 
 function displayDiceResults() {
     const container = document.getElementById("diceResultHistory");
+    if (!container) return;
+
     container.innerHTML = "";
 
-    const results = getDiceResults();
-
-    results.forEach(item => {
+    getDiceResults().forEach(item => {
         const button = document.createElement("button");
-
+        button.type = "button";
         button.textContent = `${item.expression} → ${item.total}`;
-
-        // 結果ログを押すと、そのダイス式を入力欄へ入れる
-        button.addEventListener("click", function() {
+        button.addEventListener("click", () => {
             document.getElementById("diceInput").value = item.expression;
         });
-
         container.appendChild(button);
     });
 }
 
-/* ダイス式ログ Cookie側は最大3件 JSON側の3件と合わせて最大6件 */
-
+/* ダイス式ログ LocalStorage側は最大3件 */
 function getDiceHistory() {
-    const cookie = getCookie("diceHistory");
-
-    if (!cookie) {
-        return [];
-    }
-
-    try {
-        const data = JSON.parse(cookie);
-        return Array.isArray(data) ? data : [];
-    } catch (error) {
-        console.error("ダイス式ログの読み込みに失敗しました:", error);
-        return [];
-    }
+    return readLocalArray(DICE_HISTORY_KEY).filter(item => typeof item === "string").slice(0, 3);
 }
 
 function saveDiceHistory(input) {
-    let history = getDiceHistory();
-
-    // 同じダイス式があれば一旦削除
-    history = history.filter(dice => dice !== input);
-
-    // 新しいものを先頭へ
+    let history = getDiceHistory().filter(dice => dice !== input);
     history.unshift(input);
-
-    // Cookie側は最大3件
-    history = history.slice(0, 3);
-
-    setCookie("diceHistory", JSON.stringify(history));
-
+    writeLocalArray(DICE_HISTORY_KEY, history, 3);
     loadDiceHistory();
 }
 
-/* JSON + Cookieのダイス式を表示 */
-
+/* JSON + LocalStorageのダイス式を表示 */
 async function loadDiceHistory() {
     const historyContainer = document.getElementById("diceHistory");
+    if (!historyContainer) return;
 
-    // 一旦表示を消す
     historyContainer.innerHTML = "";
 
     let jsonHistory = [];
 
     try {
-        const response = await fetch("dicelog.json");
-
-        if (!response.ok) {
-            throw new Error("JSONの読み込みに失敗しました");
-        }
+        const response = await fetch("dicelog.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("JSONの読み込みに失敗しました");
 
         const data = await response.json();
-
         if (Array.isArray(data.history)) {
-            jsonHistory = data.history;
+            jsonHistory = data.history.filter(item => typeof item === "string");
         }
     } catch (error) {
         console.error("dicelog.jsonの読み込みに失敗しました:", error);
     }
 
-    // Cookie側の履歴
-    const cookieHistory = getDiceHistory();
-
-    // JSONを優先し、重複を除いて最大6件
     const combinedHistory = [];
 
-    for (const dice of jsonHistory) {
+    for (const dice of [...jsonHistory, ...getDiceHistory()]) {
         if (!combinedHistory.includes(dice)) {
             combinedHistory.push(dice);
         }
-
-        if (combinedHistory.length >= 6) {
-            break;
-        }
+        if (combinedHistory.length >= 6) break;
     }
 
-    for (const dice of cookieHistory) {
-        if (!combinedHistory.includes(dice)) {
-            combinedHistory.push(dice);
-        }
-
-        if (combinedHistory.length >= 6) {
-            break;
-        }
-    }
-
-    // ボタンを作成
     combinedHistory.forEach(dice => {
         const button = document.createElement("button");
-
+        button.type = "button";
         button.textContent = dice;
-
-        button.addEventListener("click", function() {
+        button.addEventListener("click", () => {
             document.getElementById("diceInput").value = dice;
         });
-
         historyContainer.appendChild(button);
     });
 }
 
 /* ダイスロール */
-
 function rollDice() {
     const input = document.getElementById("diceInput").value.trim();
     const result = document.getElementById("diceResult");
@@ -285,7 +248,6 @@ function rollDice() {
     }
 
     const terms = input.split("+").map(term => term.trim());
-
     let total = 0;
     const details = [];
 
@@ -298,7 +260,6 @@ function rollDice() {
         }
 
         const match = term.match(/^(\d+)[dD](\d+)$/);
-
         if (!match) {
             result.textContent = `「${term}」の形式が正しくありません。`;
             return;
@@ -318,10 +279,8 @@ function rollDice() {
         }
 
         const rolls = [];
-
         for (let i = 0; i < diceCount; i++) {
-            const roll = Math.floor(Math.random() * diceSides) + 1;
-            rolls.push(roll);
+            rolls.push(Math.floor(Math.random() * diceSides) + 1);
         }
 
         const diceTotal = rolls.reduce((sum, value) => sum + value, 0);
@@ -334,56 +293,46 @@ function rollDice() {
         `);
     }
 
-    result.innerHTML = `
-        ${details.join("")}
-        <p><strong>合計：${total}</strong></p>
-    `;
+    result.innerHTML = `${details.join("")}<p><strong>合計：${total}</strong></p>`;
 
-    // 正常にダイスを振り終わったあとでCookieへ保存
     saveDiceResult(input, total);
     saveDiceHistory(input);
 }
 
 /* 履歴クリア */
-
 function clearDiceResults() {
-    // ダイス結果ログのCookieを削除
-    setCookie("diceResults", "", -1);
+    removeLocal(DICE_RESULTS_KEY);
+    deleteCookie("diceResults");
     displayDiceResults();
 }
 
 function clearDiceHistory() {
-    // Cookie側のダイス式ログを削除
-    setCookie("diceHistory", "", -1);
+    removeLocal(DICE_HISTORY_KEY);
+    deleteCookie("diceHistory");
     loadDiceHistory();
 }
 
 /* リセット */
-
 function resetDice() {
     document.getElementById("diceResult").innerHTML = "";
 }
 
 /* メニュー */
-
 function toggleMenu() {
     const menu = document.getElementById("sideMenu");
     menu.classList.toggle("open");
 }
 
 document.querySelectorAll("#sideMenu a").forEach(link => {
-    link.addEventListener("click", function() {
+    link.addEventListener("click", () => {
         document.getElementById("sideMenu").classList.remove("open");
     });
 });
 
-/* ページ読み込み時 */
-
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", () => {
     displayDiceResults();
     loadDiceHistory();
 });
 </script>
-<script src="./auth.js"></script>
 </body>
 </html>
