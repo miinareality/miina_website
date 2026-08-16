@@ -20,7 +20,7 @@
 <p><a href="2nd/materials.html" target="_blank" > 2nd materials html</a>
 <p><a href="2nd/member.html" target="_blank" > 2nd member html</a>
 <p><a href="https://github.com/miinareality/miina_website" target="_blank" > Github miina_website</a>
-<p><a href="2nd/memo.html"　target="_blank"　>📝 メモ帳</a></p>
+<p><a href="2nd/memo.html"target="_blank">📝 メモ帳</a></p>
 <p>1st dice html disable</p><p>1st business html disable</p><p>1st materials html disable</p><p>1st member html disable</p>
 <!-- 右側メニュー -->
 <nav id="sideMenu" class="side-menu">
@@ -94,9 +94,132 @@ setInterval(() => {
 location.reload();
 }, 120 * 1000);
 </script>
+<script>
+/*
+ * debug.html 専用アカウント状態取得
+ * Supabase JS SDKに依存せず、同一オリジンのAuth Storageから
+ * セッションを取得してSupabase Auth REST APIでユーザーを確認します。
+ */
+(() => {
+    const statusElement = document.getElementById("account-status-content");
+    if (!statusElement) return;
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="2nd/auth.js"></script>
-    <script src="2nd/debug-auth.js"></script>
+    const SUPABASE_URL = "https://xbactiinrfyjdixdlquq.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_suDqy2nOQ2nd616qIhR2hg_sX-_2Anc";
+    const STORAGE_KEY = "sb-xbactiinrfyjdixdlquq-auth-token";
+
+    const show = (text) => {
+        statusElement.replaceChildren();
+        const div = document.createElement("div");
+        div.textContent = text;
+        statusElement.appendChild(div);
+    };
+
+    const renderUser = (user) => {
+        statusElement.replaceChildren();
+
+        const state = document.createElement("div");
+        state.textContent = user ? "🔐 ログイン中" : "🔓 未ログイン";
+        statusElement.appendChild(state);
+
+        if (!user) {
+            const message = document.createElement("div");
+            message.style.marginTop = "8px";
+            message.textContent = "現在ログインしていません。";
+            statusElement.appendChild(message);
+
+            const login = document.createElement("div");
+            login.style.marginTop = "10px";
+            const link = document.createElement("a");
+            link.href = "2nd/login.html";
+            link.textContent = "ログイン";
+            login.appendChild(link);
+            statusElement.appendChild(login);
+            return;
+        }
+
+        const addField = (title, value) => {
+            const box = document.createElement("div");
+            box.style.marginTop = "8px";
+
+            const strong = document.createElement("strong");
+            strong.textContent = title;
+            box.appendChild(strong);
+            box.appendChild(document.createElement("br"));
+            box.appendChild(document.createTextNode(value || "未設定"));
+            statusElement.appendChild(box);
+        };
+
+        addField("メールアドレス", user.email);
+        addField("ユーザーID", user.id);
+        addField("認証状態", user.email_confirmed_at ? "メール認証済み" : "メール未認証");
+    };
+
+    const getStoredSession = () => {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return null;
+
+            const parsed = JSON.parse(raw);
+            return parsed?.currentSession || parsed;
+        } catch (error) {
+            console.error("Auth Storage読み込みエラー:", error);
+            return null;
+        }
+    };
+
+    const getUser = async (session) => {
+        if (!session?.access_token) return null;
+
+        const response = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+            method: "GET",
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${session.access_token}`
+            },
+            cache: "no-store"
+        });
+
+        if (response.status === 401) {
+            // 期限切れ等。ここでは誤って「ログイン中」と表示しない。
+            return null;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Supabase Auth HTTP ${response.status}`);
+        }
+
+        return await response.json();
+    };
+
+    const update = async () => {
+        try {
+            const session = getStoredSession();
+
+            if (!session) {
+                renderUser(null);
+                return;
+            }
+
+            const user = await getUser(session);
+            renderUser(user);
+        } catch (error) {
+            console.error("アカウント状態取得エラー:", error);
+            show("認証状態を取得できませんでした。");
+        }
+    };
+
+    update();
+
+    // ログイン後に別タブから戻った場合などにも更新。
+    window.addEventListener("storage", (event) => {
+        if (event.key === STORAGE_KEY) update();
+    });
+
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) update();
+    });
+})();
+</script>
 </body>
 </html>
