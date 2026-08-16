@@ -1,81 +1,71 @@
 /* =========================================================
    auth.js
-   Supabase authentication core.
-   This file intentionally does NOT create visible login UI.
-   debug.html can opt into the debug status display.
+   Supabase authentication core
+
+   認証UIはここには置きません。
+   login.html / debug.html など各ページ側のJSから呼び出します。
    ========================================================= */
 
 const SUPABASE_URL = "https://xbactiinrfyjdixdlquq.supabase.co";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_suDqy2nOQ2nd616qIhR2hg_sX-_2Anc";
 
 let supabaseClient = null;
-let authInitialized = false;
+let supabaseLoadPromise = null;
 
 function loadSupabase() {
-    return new Promise((resolve, reject) => {
-        if (window.supabase && window.supabase.createClient) {
-            resolve(window.supabase);
-            return;
-        }
+    if (window.supabase?.createClient) {
+        return Promise.resolve(window.supabase);
+    }
 
-        const existing = document.querySelector('script[data-supabase-client="true"]');
+    if (supabaseLoadPromise) return supabaseLoadPromise;
+
+    supabaseLoadPromise = new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-miina-supabase="true"]');
         if (existing) {
             existing.addEventListener("load", () => resolve(window.supabase), { once: true });
-            existing.addEventListener("error", reject, { once: true });
+            existing.addEventListener("error", () => reject(new Error("Supabaseライブラリの読み込みに失敗しました。")), { once: true });
             return;
         }
 
         const script = document.createElement("script");
         script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
         script.async = true;
-        script.dataset.supabaseClient = "true";
-        script.onload = () => resolve(window.supabase);
-        script.onerror = reject;
+        script.dataset.miinaSupabase = "true";
+        script.onload = () => {
+            if (window.supabase?.createClient) {
+                resolve(window.supabase);
+            } else {
+                reject(new Error("Supabaseライブラリを利用できません。"));
+            }
+        };
+        script.onerror = () => reject(new Error("Supabaseライブラリの読み込みに失敗しました。"));
         document.head.appendChild(script);
     });
+
+    return supabaseLoadPromise;
 }
 
 async function initializeSupabase() {
     if (supabaseClient) return supabaseClient;
 
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY ||
-        SUPABASE_URL.includes("YOUR_SUPABASE") ||
-        SUPABASE_ANON_KEY.includes("YOUR_SUPABASE")) {
-        console.warn("Supabase settings are not configured in auth.js.");
-        return null;
+    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+        throw new Error("Supabaseの設定がありません。");
     }
 
     const lib = await loadSupabase();
-    supabaseClient = lib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    authInitialized = true;
+    supabaseClient = lib.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     return supabaseClient;
 }
 
 async function getCurrentSession() {
     const client = await initializeSupabase();
-    if (!client) return null;
-
     const { data, error } = await client.auth.getSession();
-    if (error) {
-        console.error("getSession error:", error);
-        return null;
-    }
+    if (error) throw error;
     return data.session;
-}
-
-function formatAuthError(error) {
-    const message = error?.message || "";
-    if (/invalid login credentials/i.test(message)) return "メールアドレスまたはパスワードが正しくありません。";
-    if (/email not confirmed/i.test(message)) return "メールアドレスの確認が必要です。";
-    if (/password/i.test(message) && /short|length|characters/i.test(message)) return "パスワードの条件を確認してください。";
-    if (/already registered|already exists/i.test(message)) return "このメールアドレスはすでに登録されています。";
-    return "認証処理でエラーが発生しました。しばらくしてからもう一度お試しください。";
 }
 
 async function signIn(email, password) {
     const client = await initializeSupabase();
-    if (!client) throw new Error("Supabaseが設定されていません。");
-
     const { data, error } = await client.auth.signInWithPassword({ email, password });
     if (error) throw error;
     return data;
@@ -83,8 +73,6 @@ async function signIn(email, password) {
 
 async function signUp(email, password) {
     const client = await initializeSupabase();
-    if (!client) throw new Error("Supabaseが設定されていません。");
-
     const { data, error } = await client.auth.signUp({ email, password });
     if (error) throw error;
     return data;
@@ -92,23 +80,36 @@ async function signUp(email, password) {
 
 async function signOut() {
     const client = await initializeSupabase();
-    if (!client) return;
-
     const { error } = await client.auth.signOut();
     if (error) throw error;
 }
 
-async function onAuthStateChange(callback) {
+async function watchAuthState(callback) {
     const client = await initializeSupabase();
-    if (!client) return null;
-
-    return client.auth.onAuthStateChange((event, session) => {
-        try {
-            callback(event, session);
-        } catch (error) {
-            console.error("Auth callback error:", error);
-        }
+    const { data } = client.auth.onAuthStateChange((event, session) => {
+        callback(event, session);
     });
+    return data.subscription;
+}
+
+function getAuthErrorMessage(error) {
+    const message = error?.message || "";
+
+    if (/invalid login credentials/i.test(message)) {
+        return "メールアドレスまたはパスワードが正しくありません。";
+    }
+    if (/email not confirmed/i.test(message)) {
+        return "メールアドレスの確認が必要です。Supabaseのメール設定も確認してください。";
+    }
+    if (/already registered|user already registered/i.test(message)) {
+        return "このメールアドレスはすでに登録されています。";
+    }
+    if (/password/i.test(message) && /short|characters|length/i.test(message)) {
+        return "パスワードの条件を確認してください。";
+    }
+
+    console.error("Supabase authentication error:", error);
+    return "認証処理でエラーが発生しました。しばらくしてからもう一度お試しください。";
 }
 
 window.MiinaAuth = {
@@ -117,6 +118,6 @@ window.MiinaAuth = {
     signIn,
     signUp,
     signOut,
-    onAuthStateChange,
-    formatAuthError
+    watchAuthState,
+    getAuthErrorMessage
 };
