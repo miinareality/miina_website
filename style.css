@@ -150,20 +150,56 @@ body {
     text-decoration: underline;
 }
 
-/* アカウント状態表示（debug.html専用） */
+/* アカウント状態（debug.html専用・折りたたみ式） */
 #account-status {
     position: fixed;
     right: 20px;
     bottom: 20px;
     z-index: 2000;
-    width: 240px;
-    max-width: calc(100vw - 40px);
-    padding: 15px;
     box-sizing: border-box;
+    cursor: pointer;
+    user-select: none;
+}
+
+#account-status.account-status-collapsed {
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: white;
     border: 1px solid #007bff;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#account-status-toggle {
+    color: #007bff;
+    font-size: 25px;
+    line-height: 1;
+}
+
+#account-status.account-status-expanded {
+    width: 240px;
+    max-width: calc(100vw - 40px);
+    padding: 15px;
+    background: white;
+    border: 1px solid #007bff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#account-status.account-status-expanded #account-status-toggle {
+    display: none;
+}
+
+#account-status-panel {
+    display: none;
+}
+
+#account-status.account-status-expanded #account-status-panel {
+    display: block;
 }
 
 #account-status h3 {
@@ -176,6 +212,17 @@ body {
 #account-status-content {
     line-height: 1.7;
     word-break: break-word;
+}
+
+#account-status-content a {
+    color: #0066cc;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#account-status-content a:hover {
+    color: #ff66aa;
+    text-decoration: underline;
 }
 
 /* スマホ用レイアウト */
@@ -245,10 +292,7 @@ body {
         gap: 8px;
         align-items: center;
     }
+    #account-status { right: 12px; bottom: 12px; }
 
-    #account-status {
-        right: 12px;
-        bottom: 12px;
-        max-width: calc(100vw - 24px);
-    }
+    #account-status.account-status-expanded { max-width: calc(100vw - 24px); }
 }

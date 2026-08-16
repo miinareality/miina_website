@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>バッチ獲得者への待遇 - ミィナのWebサイト</title>
+    <link rel="icon" type="image/x-icon" href="/miina_website/favicon.ico">
+    <link rel="apple-touch-icon" href="/miina_website/favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+</head>
+    
+<body>
+
+<!-- メニューボタン -->
+<button id="menuButton" class="menu-button" onclick="toggleMenu()">
+    ☰ メニュー
+</button>
+
+<!-- 右側メニュー -->
+<nav id="sideMenu" class="side-menu">
+    <h2>メニュー</h2>
+
+<a href="../">🏠 ホーム</a>
+<a href="dice.html">🎲 ダイス</a>
+<a href="member.html">🙍 バッチ取得者への待遇</a>
+<a href="materials.html">🖼 使用素材</a>
+<a href="business.html">💼 企業様への連絡</a>
+</nav>
+
+<section class="content">
+    <h2>バッチ獲得者の待遇</h2>
+ <p>1 webに名前を記載 </p>
+ <p>2 webにRealityリンク埋め込みで記載。Xもあればそれも</p>
+ <p>3 webにアイコンも記載 </p>
+ <p>一ヶ月たってバッチ無取得もしくはランクダウンしてた場合、 そこまで待遇を下げます</p>
+
+</section>
+
+  <section class="content">
+    <h2>バッチ取得者</h2>
+    <h2> 1 </h2>
+    <h2> 2 </h2>
+    <h2> 3 </h2>
+  </section>
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.classList.toggle("open");
+}
+
+document.querySelectorAll("#sideMenu a").forEach(link => {
+    link.addEventListener("click", function() {
+        document.getElementById("sideMenu").classList.remove("open");
+    });
+});
+</script>
+</body>
+</html>

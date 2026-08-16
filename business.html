@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企業様への連絡 - ミィナのWebサイト</title>
+    <link rel="icon" type="image/x-icon" href="/miina_website/favicon.ico">
+    <link rel="apple-touch-icon" href="/miina_website/favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<!-- メニューボタン -->
+<button id="menuButton" class="menu-button" onclick="toggleMenu()">
+    ☰ メニュー
+</button>
+
+<!-- 右側メニュー -->
+<nav id="sideMenu" class="side-menu">
+    <h2>メニュー</h2>
+
+<a href="../">🏠 ホーム</a>
+<a href="dice.html">🎲 ダイス</a>
+<a href="member.html">🙍 バッチ取得者への待遇</a>
+<a href="materials.html">🖼 使用素材</a>
+<a href="business.html">💼 企業様への連絡</a>
+</nav>
+
+<section class="content">
+    <h2>企業様のための連絡手段</h2>
+
+    <p>連絡用outlookアカウント：miina_contonry@outlook.jp</p>
+
+    <p>
+        もし、スパムやリスナーからのただのメールだった場合、
+        ブロック対応をする可能性がありますのでご了承ください。
+    </p>
+</section>
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.classList.toggle("open");
+}
+
+document.querySelectorAll("#sideMenu a").forEach(link => {
+    link.addEventListener("click", function() {
+        document.getElementById("sideMenu").classList.remove("open");
+    });
+});
+</script>
+</body>
+</html>

@@ -33,12 +33,49 @@
 <a href="2nd/login.html">🔐 ログイン</a>
 </nav>
 <!-- 現在のアカウント状態 -->
-<div id="account-status"><h3>アカウント状態</h3>
-<div id="account-status-content">読み込み中...
-</div>
+<div id="account-status" class="account-status-collapsed"
+     role="button"
+     tabindex="0"
+     aria-expanded="false"
+     aria-label="アカウント状態を開く">
+    <div id="account-status-toggle" aria-hidden="true">☰</div>
+    <div id="account-status-panel">
+        <h3>アカウント状態</h3>
+        <div id="account-status-content">読み込み中...</div>
+    </div>
 </div>
 
 <script>
+
+function toggleAccountStatus() {
+    const account = document.getElementById("account-status");
+    if (!account) return;
+
+    const expanded = account.classList.toggle("account-status-expanded");
+    account.classList.toggle("account-status-collapsed", !expanded);
+    account.setAttribute("aria-expanded", String(expanded));
+    account.setAttribute(
+        "aria-label",
+        expanded ? "アカウント状態を閉じる" : "アカウント状態を開く"
+    );
+}
+
+const accountStatus = document.getElementById("account-status");
+if (accountStatus) {
+    accountStatus.addEventListener("click", (event) => {
+        // ログインリンクなど、内部の操作は開閉クリックとして扱わない。
+        if (event.target.closest("a, button, input, textarea, select")) return;
+        toggleAccountStatus();
+    });
+
+    accountStatus.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            toggleAccountStatus();
+        }
+    });
+}
+
 function toggleMenu() {
 const menu = document.getElementById("sideMenu");
 menu.classList.toggle("open");

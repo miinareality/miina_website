@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン - ミィナのWebサイト</title>
+
+    <link rel="icon" type="image/x-icon" href="/miina_website/favicon.ico">
+    <link rel="apple-touch-icon" href="/miina_website/favicon.ico">
+
+    <!-- 2nd/login.html なので、ルートのstyle.cssを参照 -->
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+    <!-- メニューボタン -->
+    <button id="menuButton" class="menu-button" onclick="toggleMenu()">
+        ☰ メニュー
+    </button>
+
+    <!-- 右側メニュー -->
+    <nav id="sideMenu" class="side-menu">
+        <h2>メニュー</h2>
+
+        <a href="../">🏠 ホーム</a>
+        <a href="dice.html">🎲 ダイス</a>
+        <a href="member.html">🙍 バッチ取得者への待遇</a>
+        <a href="materials.html">🖼 使用素材</a>
+        <a href="business.html">💼 企業様への連絡</a>
+    </nav>
+
+    <!-- ログイン画面 -->
+    <section class="content">
+        <h2>🔐 ログイン</h2>
+        <p>こちらは作成段階です。まだ公開していない機能ですので、アカウント作成は自己責任にしてください。</p>
+        <p>
+            メールアドレスとパスワードを入力してください。
+        </p>
+
+        <form id="login-form">
+        <div>
+            <label for="email">メールアドレス</label><br>
+            <input
+                type="email"
+                id="email"
+                placeholder="example@example.com"
+                autocomplete="email"
+            >
+        </div>
+
+        <br>
+
+        <div>
+            <label for="password">パスワード</label><br>
+            <input
+                type="password"
+                id="password"
+                placeholder="パスワード"
+                autocomplete="current-password"
+            >
+        </div>
+
+        <br>
+
+        <button id="loginButton" type="submit">
+            ログイン
+        </button>
+
+        <button id="signupButton" type="button">
+            新規登録
+        </button>
+
+        <p id="authMessage"></p>
+        </form>
+    </section>
+
+    <script>
+        /* メニュー */
+
+        function toggleMenu() {
+            const menu = document.getElementById("sideMenu");
+            menu.classList.toggle("open");
+        }
+
+        document.querySelectorAll("#sideMenu a").forEach(link => {
+            link.addEventListener("click", function() {
+                document.getElementById("sideMenu").classList.remove("open");
+            });
+        });
+    </script>
+
+<!-- 認証処理 -->
+<script src="./auth.js"></script>
+<script src="./login.js"></script>
+</body>
+</html>
