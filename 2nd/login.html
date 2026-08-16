@@ -50,7 +50,7 @@
             <label for="email">メールアドレス</label><br>
             <input
                 type="email"
-                id="email"
+                id="login-email"
                 placeholder="example@example.com"
                 autocomplete="email"
             >
@@ -62,7 +62,7 @@
             <label for="password">パスワード</label><br>
             <input
                 type="password"
-                id="password"
+                id="login-password"
                 placeholder="パスワード"
                 autocomplete="current-password"
             >
@@ -102,5 +102,17 @@
 <script src="./login.js"></script>
 <div id="login-message" class="login-message" aria-live="polite"></div>
 <button type="button" id="resend-confirmation" hidden>確認メールを再送する</button>
+
+<section class="signup-section" aria-labelledby="signup-title">
+    <h2 id="signup-title">新規アカウント作成</h2>
+    <form id="signup-form">
+        <label for="signup-email">メールアドレス</label>
+        <input id="signup-email" type="email" autocomplete="email" required>
+        <label for="signup-password">パスワード</label>
+        <input id="signup-password" type="password" autocomplete="new-password" required>
+        <button type="submit">アカウントを作成</button>
+    </form>
+</section>
+
 </body>
 </html>

@@ -1,30 +1,45 @@
 /* login.js - login.html only */
-
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("login-form");
     const signupForm = document.getElementById("signup-form");
+
+    // Login inputs
     const loginEmail = document.getElementById("login-email");
     const loginPassword = document.getElementById("login-password");
+
+    // Signup inputs
     const signupEmail = document.getElementById("signup-email");
     const signupPassword = document.getElementById("signup-password");
+
     const message = document.getElementById("login-message");
     const resendButton = document.getElementById("resend-confirmation");
 
     let lastSignupEmail = "";
 
+    const valueOf = (element) => element ? element.value.trim() : "";
+
     const showMessage = (text, type = "") => {
-        if (!message) return;
+        if (!message) {
+            alert(text);
+            return;
+        }
         message.textContent = text;
         message.className = type ? `login-message ${type}` : "login-message";
     };
 
-    loginForm?.addEventListener("submit", async (event) => {
+    if (!loginForm) {
+        console.error("login-form が見つかりません。");
+        return;
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const email = loginEmail?.value.trim() || "";
-        const password = loginPassword?.value || "";
+        const email = valueOf(loginEmail);
+        const password = loginPassword ? loginPassword.value : "";
 
-        if (!email || !password) {
+        // Only reject genuinely empty values.
+        if (email === "" || password === "") {
             showMessage("メールアドレスとパスワードを入力してください。", "error");
             return;
         }
@@ -33,10 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             await MiinaAuth.signIn(email, password);
-            showMessage("ログインしました。");
+            showMessage("ログインしました。", "success");
             window.location.href = "../debug.html";
         } catch (error) {
-            console.error(error);
+            console.error("Login error:", error);
             showMessage(MiinaAuth.formatAuthError(error), "error");
 
             if (/email not confirmed/i.test(error?.message || "")) {
@@ -49,10 +64,10 @@ document.addEventListener("DOMContentLoaded", () => {
     signupForm?.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const email = signupEmail?.value.trim() || "";
-        const password = signupPassword?.value || "";
+        const email = valueOf(signupEmail);
+        const password = signupPassword ? signupPassword.value : "";
 
-        if (!email || !password) {
+        if (email === "" || password === "") {
             showMessage("メールアドレスとパスワードを入力してください。", "error");
             return;
         }
@@ -63,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await MiinaAuth.signUp(email, password);
             lastSignupEmail = email;
 
-            // Confirm Emailが有効なら通常ここではsessionが発行されない。
             if (!data.session) {
                 showMessage(
                     "アカウントを作成しました。登録したメールアドレスに確認メールを送信しました。メール内のリンクを押して認証を完了してください。",
@@ -71,19 +85,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
                 if (resendButton) resendButton.hidden = false;
             } else {
-                // Supabase側でConfirm EmailがOFFの場合の保険。
                 showMessage("アカウントを作成しました。", "success");
             }
         } catch (error) {
-            console.error(error);
+            console.error("Signup error:", error);
             showMessage(MiinaAuth.formatAuthError(error), "error");
         }
     });
 
     resendButton?.addEventListener("click", async () => {
-        const email = lastSignupEmail || signupEmail?.value.trim() || loginEmail?.value.trim() || "";
+        const email = lastSignupEmail || valueOf(signupEmail) || valueOf(loginEmail);
 
-        if (!email) {
+        if (email === "") {
             showMessage("確認メールを再送するメールアドレスを入力してください。", "error");
             return;
         }
@@ -94,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await MiinaAuth.resendSignupConfirmation(email);
             showMessage("確認メールを再送しました。メールをご確認ください。", "success");
         } catch (error) {
-            console.error(error);
+            console.error("Resend confirmation error:", error);
             showMessage(MiinaAuth.formatAuthError(error), "error");
         }
     });
