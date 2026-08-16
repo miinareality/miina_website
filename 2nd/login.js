@@ -1,99 +1,101 @@
-/* login.js
-   login.html 専用の認証UI処理。
-   公開ページにはログインUIを追加しません。
-*/
+/* login.js - login.html only */
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const form = document.getElementById("login-form");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const loginButton = document.getElementById("loginButton");
-    const signupButton = document.getElementById("signupButton");
-    const message = document.getElementById("authMessage");
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("login-form");
+    const signupForm = document.getElementById("signup-form");
+    const loginEmail = document.getElementById("login-email");
+    const loginPassword = document.getElementById("login-password");
+    const signupEmail = document.getElementById("signup-email");
+    const signupPassword = document.getElementById("signup-password");
+    const message = document.getElementById("login-message");
+    const resendButton = document.getElementById("resend-confirmation");
 
-    const showMessage = (text, isError = false) => {
+    let lastSignupEmail = "";
+
+    const showMessage = (text, type = "") => {
         if (!message) return;
         message.textContent = text;
-        message.style.color = isError ? "#d00" : "";
+        message.className = type ? `login-message ${type}` : "login-message";
     };
 
-    const setButtonsDisabled = (disabled) => {
-        if (loginButton) loginButton.disabled = disabled;
-        if (signupButton) signupButton.disabled = disabled;
-    };
-
-    try {
-        await MiinaAuth.initializeSupabase();
-    } catch (error) {
-        console.error("Supabase initialization error:", error);
-        showMessage("Supabaseとの接続準備に失敗しました。ページを再読み込みしてください。", true);
-        return;
-    }
-
-    try {
-        const session = await MiinaAuth.getCurrentSession();
-        if (session?.user) {
-            showMessage(`現在ログイン中です：${session.user.email || "ユーザー"}`);
-        }
-    } catch (error) {
-        console.error("Session check error:", error);
-    }
-
-    form?.addEventListener("submit", async (event) => {
+    loginForm?.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const email = emailInput?.value.trim() || "";
-        const password = passwordInput?.value || "";
+        const email = loginEmail?.value.trim() || "";
+        const password = loginPassword?.value || "";
 
         if (!email || !password) {
-            showMessage("メールアドレスとパスワードを入力してください。", true);
+            showMessage("メールアドレスとパスワードを入力してください。", "error");
             return;
         }
 
-        setButtonsDisabled(true);
-        showMessage("ログインしています……");
+        showMessage("ログインしています…");
 
         try {
-            const result = await MiinaAuth.signIn(email, password);
-            console.log("ログイン成功:", result.user);
-            showMessage("ログインしました。debug.htmlへ移動します。");
-
-            setTimeout(() => {
-                window.location.href = "../debug.html";
-            }, 500);
+            await MiinaAuth.signIn(email, password);
+            showMessage("ログインしました。");
+            window.location.href = "../debug.html";
         } catch (error) {
-            showMessage(MiinaAuth.getAuthErrorMessage(error), true);
-        } finally {
-            setButtonsDisabled(false);
+            console.error(error);
+            showMessage(MiinaAuth.formatAuthError(error), "error");
+
+            if (/email not confirmed/i.test(error?.message || "")) {
+                lastSignupEmail = email;
+                if (resendButton) resendButton.hidden = false;
+            }
         }
     });
 
-    signupButton?.addEventListener("click", async () => {
-        const email = emailInput?.value.trim() || "";
-        const password = passwordInput?.value || "";
+    signupForm?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const email = signupEmail?.value.trim() || "";
+        const password = signupPassword?.value || "";
 
         if (!email || !password) {
-            showMessage("メールアドレスとパスワードを入力してください。", true);
+            showMessage("メールアドレスとパスワードを入力してください。", "error");
             return;
         }
 
-        setButtonsDisabled(true);
-        showMessage("アカウントを作成しています……");
+        showMessage("アカウントを作成しています…");
 
         try {
-            const result = await MiinaAuth.signUp(email, password);
-            if (result?.session?.user) {
-                showMessage("アカウントを作成し、ログインしました。debug.htmlへ移動します。");
-                setTimeout(() => {
-                    window.location.href = "../debug.html";
-                }, 500);
+            const data = await MiinaAuth.signUp(email, password);
+            lastSignupEmail = email;
+
+            // Confirm Emailが有効なら通常ここではsessionが発行されない。
+            if (!data.session) {
+                showMessage(
+                    "アカウントを作成しました。登録したメールアドレスに確認メールを送信しました。メール内のリンクを押して認証を完了してください。",
+                    "success"
+                );
+                if (resendButton) resendButton.hidden = false;
             } else {
-                showMessage("アカウントを作成しました。必要な場合はメールアドレスを確認してからログインしてください。");
+                // Supabase側でConfirm EmailがOFFの場合の保険。
+                showMessage("アカウントを作成しました。", "success");
             }
         } catch (error) {
-            showMessage(MiinaAuth.getAuthErrorMessage(error), true);
-        } finally {
-            setButtonsDisabled(false);
+            console.error(error);
+            showMessage(MiinaAuth.formatAuthError(error), "error");
+        }
+    });
+
+    resendButton?.addEventListener("click", async () => {
+        const email = lastSignupEmail || signupEmail?.value.trim() || loginEmail?.value.trim() || "";
+
+        if (!email) {
+            showMessage("確認メールを再送するメールアドレスを入力してください。", "error");
+            return;
+        }
+
+        showMessage("確認メールを再送しています…");
+
+        try {
+            await MiinaAuth.resendSignupConfirmation(email);
+            showMessage("確認メールを再送しました。メールをご確認ください。", "success");
+        } catch (error) {
+            console.error(error);
+            showMessage(MiinaAuth.formatAuthError(error), "error");
         }
     });
 });

@@ -1,0 +1,9 @@
+メールアドレス認証の設定
+
+1. Supabase Dashboard > Authentication > Providers > Email で Confirm Email をONにしてください。
+2. Supabase Dashboard > Authentication > URL Configuration の Redirect URLs に
+   https://miinareality.github.io/miina_website/2nd/login.html
+   を追加してください。
+3. Site URLも実際の公開サイトURLに合わせてください。
+4. 確認メールのリンクを押すと login.html に戻ります。
+5. 未認証ユーザーはログイン時にエラーとなり、確認メール再送ボタンが表示されます。

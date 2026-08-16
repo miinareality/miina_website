@@ -10,6 +10,13 @@
 
     <!-- 2nd/login.html なので、ルートのstyle.cssを参照 -->
     <link rel="stylesheet" href="../style.css">
+<style>
+/* email confirmation UI */
+.login-message { margin-top: 12px; line-height: 1.6; }
+.login-message.error { color: #c62828; }
+.login-message.success { color: #2e7d32; }
+#resend-confirmation { margin-top: 10px; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+</style>
 </head>
 
 <body>
@@ -93,5 +100,7 @@
 <!-- 認証処理 -->
 <script src="./auth.js"></script>
 <script src="./login.js"></script>
+<div id="login-message" class="login-message" aria-live="polite"></div>
+<button type="button" id="resend-confirmation" hidden>確認メールを再送する</button>
 </body>
 </html>
