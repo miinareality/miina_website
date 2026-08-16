@@ -8,15 +8,7 @@
     <link rel="icon" type="image/x-icon" href="/miina_website/favicon.ico">
     <link rel="apple-touch-icon" href="/miina_website/favicon.ico">
 
-    <!-- 2nd/login.html なので、ルートのstyle.cssを参照 -->
     <link rel="stylesheet" href="../style.css">
-<style>
-/* email confirmation UI */
-.login-message { margin-top: 12px; line-height: 1.6; }
-.login-message.error { color: #c62828; }
-.login-message.success { color: #2e7d32; }
-#resend-confirmation { margin-top: 10px; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
-</style>
 </head>
 
 <body>
@@ -37,20 +29,17 @@
         <a href="business.html">💼 企業様への連絡</a>
     </nav>
 
-    <!-- ログイン画面 -->
+    <!-- ログイン画面（既存UIを維持） -->
     <section class="content">
         <h2>🔐 ログイン</h2>
         <p>こちらは作成段階です。まだ公開していない機能ですので、アカウント作成は自己責任にしてください。</p>
-        <p>
-            メールアドレスとパスワードを入力してください。
-        </p>
+        <p>メールアドレスとパスワードを入力してください。</p>
 
-        <form id="login-form">
         <div>
             <label for="email">メールアドレス</label><br>
             <input
                 type="email"
-                id="login-email"
+                id="email"
                 placeholder="example@example.com"
                 autocomplete="email"
             >
@@ -62,7 +51,7 @@
             <label for="password">パスワード</label><br>
             <input
                 type="password"
-                id="login-password"
+                id="password"
                 placeholder="パスワード"
                 autocomplete="current-password"
             >
@@ -70,39 +59,239 @@
 
         <br>
 
-        <button id="loginButton" type="submit">
-            ログイン
-        </button>
+        <button id="loginButton" type="button">ログイン</button>
+        <button id="signupButton" type="button">新規登録</button>
 
-        <button id="signupButton" type="button">
-            新規登録
-        </button>
-
-        <p id="authMessage"></p>
-        </form>
+        <p id="authMessage" aria-live="polite"></p>
+        <button id="resendConfirmationButton" type="button" hidden>確認メールを再送する</button>
     </section>
 
     <script>
         /* メニュー */
-
         function toggleMenu() {
             const menu = document.getElementById("sideMenu");
-            menu.classList.toggle("open");
+            if (menu) menu.classList.toggle("open");
         }
 
         document.querySelectorAll("#sideMenu a").forEach(link => {
-            link.addEventListener("click", function() {
-                document.getElementById("sideMenu").classList.remove("open");
+            link.addEventListener("click", () => {
+                document.getElementById("sideMenu")?.classList.remove("open");
             });
         });
     </script>
 
-<!-- 認証処理 -->
-<script src="./auth.js"></script>
-<script src="./login.js"></script>
-<div id="login-message" class="login-message" aria-live="polite"></div>
-<button type="button" id="resend-confirmation" hidden>確認メールを再送する</button>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <script>
+        /*
+         * login.html 単体で動作する認証処理
+         * auth.js / login.js の読み込み状態に依存しないよう、このページだけに処理を置いています。
+         */
+        document.addEventListener("DOMContentLoaded", () => {
+            const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
+            const loginButton = document.getElementById("loginButton");
+            const signupButton = document.getElementById("signupButton");
+            const message = document.getElementById("authMessage");
+            const resendButton = document.getElementById("resendConfirmationButton");
 
+            const SUPABASE_URL = "https://xbactiinrfyjdixdlquq.supabase.co";
+            const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_suDqy2nOQ2nd616qIhR2hg_sX-_2Anc";
+            const REDIRECT_URL = "https://miinareality.github.io/miina_website/2nd/login.html";
+
+            let client = null;
+            let lastSignupEmail = "";
+
+            function showMessage(text, isError = false) {
+                if (!message) return;
+                message.textContent = text;
+                message.style.color = isError ? "red" : "";
+            }
+
+            function getEmail() {
+                return emailInput ? emailInput.value.trim() : "";
+            }
+
+            function getPassword() {
+                return passwordInput ? passwordInput.value : "";
+            }
+
+            function getClient() {
+                if (client) return client;
+
+                if (!window.supabase || typeof window.supabase.createClient !== "function") {
+                    throw new Error("Supabaseライブラリを読み込めませんでした。ページを再読み込みしてください。");
+                }
+
+                client = window.supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_PUBLISHABLE_KEY
+                );
+                return client;
+            }
+
+            function formatError(error) {
+                const raw = String(error?.message || error || "");
+                const lower = raw.toLowerCase();
+
+                console.error("Supabase認証エラー:", error);
+
+                if (lower.includes("email not confirmed")) {
+                    return "メールアドレスの認証が完了していません。確認メールをご確認ください。";
+                }
+                if (lower.includes("invalid login credentials")) {
+                    return "メールアドレスまたはパスワードが正しくありません。";
+                }
+                if (lower.includes("user already registered") || lower.includes("already registered")) {
+                    return "このメールアドレスはすでに登録されています。メール認証後にログインしてください。";
+                }
+                if (lower.includes("password") && (lower.includes("short") || lower.includes("least") || lower.includes("characters"))) {
+                    return "パスワードの条件を満たしていません。";
+                }
+                if (lower.includes("failed to fetch") || lower.includes("network")) {
+                    return "Supabaseへ接続できませんでした。通信状態を確認して、もう一度お試しください。";
+                }
+                return "認証処理でエラーが発生しました。もう一度お試しください。";
+            }
+
+            function setBusy(busy) {
+                if (loginButton) loginButton.disabled = busy;
+                if (signupButton) signupButton.disabled = busy;
+            }
+
+            if (!emailInput || !passwordInput || !loginButton || !signupButton || !message) {
+                console.error("login.htmlの認証UIを取得できませんでした。");
+                return;
+            }
+
+            // メール確認リンクから戻ってきた場合のセッション確認
+            try {
+                const currentClient = getClient();
+                currentClient.auth.getSession().then(({ data, error }) => {
+                    if (error) {
+                        console.error("セッション取得エラー:", error);
+                        return;
+                    }
+                    if (data?.session?.user?.email_confirmed_at) {
+                        showMessage("メールアドレスの認証が完了しました。ログインできます。");
+                    }
+                });
+            } catch (error) {
+                console.error("Supabase初期化エラー:", error);
+                showMessage(formatError(error), true);
+            }
+
+            loginButton.addEventListener("click", async () => {
+                const email = getEmail();
+                const password = getPassword();
+
+                if (email === "" || password === "") {
+                    showMessage("メールアドレスとパスワードを入力してください。", true);
+                    return;
+                }
+
+                setBusy(true);
+                showMessage("ログインしています……");
+
+                try {
+                    const currentClient = getClient();
+                    const { error } = await currentClient.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+                    if (error) throw error;
+
+                    showMessage("ログインしました。debug.htmlへ移動します。");
+                    setTimeout(() => {
+                        window.location.href = "../debug.html";
+                    }, 400);
+                } catch (error) {
+                    showMessage(formatError(error), true);
+                    if (/email not confirmed/i.test(error?.message || "")) {
+                        lastSignupEmail = email;
+                        resendButton.hidden = false;
+                    }
+                } finally {
+                    setBusy(false);
+                }
+            });
+
+            signupButton.addEventListener("click", async () => {
+                const email = getEmail();
+                const password = getPassword();
+
+                if (email === "" || password === "") {
+                    showMessage("メールアドレスとパスワードを入力してください。", true);
+                    return;
+                }
+
+                if (password.length < 6) {
+                    showMessage("パスワードは6文字以上にしてください。", true);
+                    return;
+                }
+
+                setBusy(true);
+                showMessage("アカウントを作成しています……");
+
+                try {
+                    const currentClient = getClient();
+                    const { data, error } = await currentClient.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                            emailRedirectTo: REDIRECT_URL
+                        }
+                    });
+
+                    if (error) throw error;
+
+                    lastSignupEmail = email;
+                    resendButton.hidden = false;
+
+                    if (!data?.session) {
+                        showMessage("アカウントを作成しました。登録したメールアドレスに確認メールを送信しました。メール内のリンクを押して認証を完了してください。");
+                    } else {
+                        showMessage("アカウントを作成しました。ログインできます。");
+                    }
+                } catch (error) {
+                    showMessage(formatError(error), true);
+                } finally {
+                    setBusy(false);
+                }
+            });
+
+            resendButton.addEventListener("click", async () => {
+                const email = lastSignupEmail || getEmail();
+
+                if (email === "") {
+                    showMessage("確認メールを再送するメールアドレスを入力してください。", true);
+                    return;
+                }
+
+                resendButton.disabled = true;
+                showMessage("確認メールを再送しています……");
+
+                try {
+                    const currentClient = getClient();
+                    const { error } = await currentClient.auth.resend({
+                        type: "signup",
+                        email,
+                        options: {
+                            emailRedirectTo: REDIRECT_URL
+                        }
+                    });
+
+                    if (error) throw error;
+                    showMessage("確認メールを再送しました。メールをご確認ください。");
+                } catch (error) {
+                    showMessage(formatError(error), true);
+                } finally {
+                    resendButton.disabled = false;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
