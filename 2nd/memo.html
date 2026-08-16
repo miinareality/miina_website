@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メモ帳 - ミィナのWebサイト</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .memo-page {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .memo-box {
+            background: rgba(255,255,255,0.94);
+            border-radius: 12px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #memo {
+            width: 100%;
+            min-height: 60vh;
+            resize: vertical;
+            box-sizing: border-box;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font: inherit;
+            line-height: 1.6;
+        }
+        .memo-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .memo-actions button {
+            padding: 9px 14px;
+            border: 1px solid #007bff;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+        }
+        #memo-status {
+            margin-top: 8px;
+            font-size: 0.9em;
+            opacity: 0.75;
+        }
+    </style>
+</head>
+<body>
+    <div class="memo-page">
+        <div class="memo-box">
+            <h1>📝 メモ帳</h1>
+            <p>このメモは、このブラウザのローカルストレージに保存されます。</p>
+            <textarea id="memo" placeholder="ここにメモを入力してください……"></textarea>
+            <div class="memo-actions">
+                <button type="button" id="save-memo">保存</button>
+                <button type="button" id="clear-memo">クリア</button>
+            </div>
+            <div id="memo-status" aria-live="polite">読み込み中…</div>
+        </div>
+    </div>
+    <script src="memo.js"></script>
+</body>
+</html>

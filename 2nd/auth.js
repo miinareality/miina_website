@@ -1,589 +1,122 @@
-/* Supabase 認証
-   2nd/auth.js */
+/* =========================================================
+   auth.js
+   Supabase authentication core.
+   This file intentionally does NOT create visible login UI.
+   debug.html can opt into the debug status display.
+   ========================================================= */
 
-
-/* Supabase設定 */
-
-// SupabaseのプロジェクトURL
 const SUPABASE_URL = "https://xbactiinrfyjdixdlquq.supabase.co";
-
-// Supabaseの「公開可能なキー」をここに貼り付ける
-// sb_publishable_... から始まるキーを使用してください。
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_suDqy2nOQ2nd616qIhR2hg_sX-_2Anc";
-
-
-/* Supabaseライブラリを読み込む */
-
-const supabaseScript = document.createElement("script");
-
-supabaseScript.src =
-"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-
-supabaseScript.onload = function () {
-initializeSupabase();
-   console.log("Supabaseの初期化が完了しました。");
-
-setupAuthEvents();
-checkLoginState();
-updateAuthButton();
-};
-
-supabaseScript.onerror = function () {
-console.error("Supabaseライブラリの読み込みに失敗しました。");
-showAuthMessage(
-"Supabaseとの接続準備に失敗しました。",
-true
-);
-};
-
-document.head.appendChild(supabaseScript);
-
-
-/* Supabase初期化 */
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 
 let supabaseClient = null;
+let authInitialized = false;
 
-function initializeSupabase() {
+function loadSupabase() {
+    return new Promise((resolve, reject) => {
+        if (window.supabase && window.supabase.createClient) {
+            resolve(window.supabase);
+            return;
+        }
 
-if (
-SUPABASE_PUBLISHABLE_KEY ===
-"ここにsb_publishable_から始まるキーを入れる"
-) {
-console.warn(
-"SupabaseのPublishable Keyが設定されていません。"
-);
+        const existing = document.querySelector('script[data-supabase-client="true"]');
+        if (existing) {
+            existing.addEventListener("load", () => resolve(window.supabase), { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
+        }
 
-showAuthMessage(
-"Supabaseの公開可能なキーがまだ設定されていません。",
-true
-);
-
-return;
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+        script.async = true;
+        script.dataset.supabaseClient = "true";
+        script.onload = () => resolve(window.supabase);
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
 }
 
-supabaseClient = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_PUBLISHABLE_KEY
-);
+async function initializeSupabase() {
+    if (supabaseClient) return supabaseClient;
 
-/* 共通ログイン状態ボタン */
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY ||
+        SUPABASE_URL.includes("YOUR_SUPABASE") ||
+        SUPABASE_ANON_KEY.includes("YOUR_SUPABASE")) {
+        console.warn("Supabase settings are not configured in auth.js.");
+        return null;
+    }
 
-async function updateAuthButton() {
-
-const authButton = document.getElementById("authButton");
-
-if (!authButton || !supabaseClient) {
-return;
+    const lib = await loadSupabase();
+    supabaseClient = lib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    authInitialized = true;
+    return supabaseClient;
 }
 
-const {
-data: { session }
-} = await supabaseClient.auth.getSession();
+async function getCurrentSession() {
+    const client = await initializeSupabase();
+    if (!client) return null;
 
-if (session) {
-
-authButton.textContent = "👤 ログイン中";
-
-authButton.onclick = async function () {
-
-const result = confirm(
-"ログアウトしますか？"
-);
-
-if (!result) {
-return;
+    const { data, error } = await client.auth.getSession();
+    if (error) {
+        console.error("getSession error:", error);
+        return null;
+    }
+    return data.session;
 }
 
-const { error } =
-await supabaseClient.auth.signOut();
-
-if (error) {
-console.error("ログアウトエラー:", error);
-return;
+function formatAuthError(error) {
+    const message = error?.message || "";
+    if (/invalid login credentials/i.test(message)) return "メールアドレスまたはパスワードが正しくありません。";
+    if (/email not confirmed/i.test(message)) return "メールアドレスの確認が必要です。";
+    if (/password/i.test(message) && /short|length|characters/i.test(message)) return "パスワードの条件を確認してください。";
+    if (/already registered|already exists/i.test(message)) return "このメールアドレスはすでに登録されています。";
+    return "認証処理でエラーが発生しました。しばらくしてからもう一度お試しください。";
 }
 
-location.reload();
+async function signIn(email, password) {
+    const client = await initializeSupabase();
+    if (!client) throw new Error("Supabaseが設定されていません。");
+
+    const { data, error } = await client.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data;
+}
+
+async function signUp(email, password) {
+    const client = await initializeSupabase();
+    if (!client) throw new Error("Supabaseが設定されていません。");
+
+    const { data, error } = await client.auth.signUp({ email, password });
+    if (error) throw error;
+    return data;
+}
+
+async function signOut() {
+    const client = await initializeSupabase();
+    if (!client) return;
+
+    const { error } = await client.auth.signOut();
+    if (error) throw error;
+}
+
+async function onAuthStateChange(callback) {
+    const client = await initializeSupabase();
+    if (!client) return null;
+
+    return client.auth.onAuthStateChange((event, session) => {
+        try {
+            callback(event, session);
+        } catch (error) {
+            console.error("Auth callback error:", error);
+        }
+    });
+}
+
+window.MiinaAuth = {
+    initializeSupabase,
+    getCurrentSession,
+    signIn,
+    signUp,
+    signOut,
+    onAuthStateChange,
+    formatAuthError
 };
-
-} else {
-
-authButton.textContent = "🔐 ログイン";
-
-authButton.onclick = function () {
-window.location.href = "2nd/login.html";
-};
-}
-}
-}
-
-
-/* メッセージ表示 */
-
-function showAuthMessage(message, isError = false) {
-
-const messageElement =
-document.getElementById("authMessage");
-
-if (!messageElement) {
-console.log(message);
-return;
-}
-
-messageElement.textContent = message;
-
-if (isError) {
-messageElement.style.color = "red";
-} else {
-messageElement.style.color = "";
-}
-}
-
-
-/* ログイン・新規登録ボタン */
-
-function setupAuthEvents() {
-
-const loginButton =
-document.getElementById("loginButton");
-
-const signupButton =
-document.getElementById("signupButton");
-
-
-/* ログイン */
-
-if (loginButton) {
-
-loginButton.addEventListener("click", async function () {
-
-if (!supabaseClient) {
-showAuthMessage(
-"Supabaseの準備が完了していません。",
-true
-);
-return;
-}
-
-const email =
-document.getElementById("email").value.trim();
-
-const password =
-document.getElementById("password").value;
-
-
-if (!email || !password) {
-showAuthMessage(
-"メールアドレスとパスワードを入力してください。",
-true
-);
-return;
-}
-
-
-loginButton.disabled = true;
-
-showAuthMessage("ログインしています……");
-
-
-try {
-
-const { data, error } =
-await supabaseClient.auth.signInWithPassword({
-email: email,
-password: password
-});
-
-
-if (error) {
-throw error;
-}
-
-
-console.log(
-"ログイン成功:",
-data.user
-);
-
-
-showAuthMessage(
-"ログインしました。index.htmlへ移動します。"
-);
-
-
-/*
- * 少し待ってからindex.htmlへ移動
- */
-setTimeout(function () {
-
-window.location.href = "../index.html";
-
-}, 800);
-
-
-} catch (error) {
-
-console.error(
-"ログインエラー:",
-error
-);
-
-showAuthMessage(
-getAuthErrorMessage(error),
-true
-);
-
-} finally {
-
-loginButton.disabled = false;
-
-}
-
-});
-
-}
-
-
-/* 新規登録 */
-
-if (signupButton) {
-
-signupButton.addEventListener("click", async function () {
-
-if (!supabaseClient) {
-showAuthMessage(
-"Supabaseの準備が完了していません。",
-true
-);
-return;
-}
-
-const email =
-document.getElementById("email").value.trim();
-
-const password =
-document.getElementById("password").value;
-
-
-if (!email || !password) {
-showAuthMessage(
-"メールアドレスとパスワードを入力してください。",
-true
-);
-return;
-}
-
-
-if (password.length < 6) {
-showAuthMessage(
-"パスワードは6文字以上にしてください。",
-true
-);
-return;
-}
-
-
-signupButton.disabled = true;
-
-showAuthMessage(
-"アカウントを作成しています……"
-);
-
-
-try {
-
-const { data, error } =
-await supabaseClient.auth.signUp({
-email: email,
-password: password
-});
-
-
-if (error) {
-throw error;
-}
-
-
-console.log(
-"新規登録成功:",
-data.user
-);
-
-
-/*
- * 今回はSupabase側で
- * Confirm emailをOFFにしているため、
- * 登録後すぐにログインできる想定。
- */
-
-showAuthMessage(
-"アカウントを作成しました。ログインを試してください。"
-);
-
-
-} catch (error) {
-
-console.error(
-"新規登録エラー:",
-error
-);
-
-showAuthMessage(
-getAuthErrorMessage(error),
-true
-);
-
-} finally {
-
-signupButton.disabled = false;
-
-}
-
-});
-
-}
-
-
-/* ログイン状態の変化を監視 */
-
-if (session && session.user) {
-
-    console.log(
-        "現在ログインしています:",
-        session.user.email
-    );
-
-    showAuthMessage(
-        "現在ログイン中です：" +
-        session.user.email
-    );
-
-} else {
-
-    console.log(
-        "現在ログインしているユーザーはいません。"
-    );
-
-}
-
-// debug.htmlのアカウント状態を更新
-if (typeof updateDebugAccountStatus === "function") {
-    updateDebugAccountStatus(session);
-/* ログイン状態を確認 */
-
-async function checkLoginState() {
-
-    if (!supabaseClient) {
-        return;
-    }
-
-    try {
-
-        const {
-            data: { session }
-        } = await supabaseClient.auth.getSession();
-
-        if (session && session.user) {
-
-            console.log(
-                "現在ログインしています:",
-                session.user.email
-            );
-
-            showAuthMessage(
-                "現在ログイン中です：" +
-                session.user.email
-            );
-
-        } else {
-
-            console.log(
-                "現在ログインしているユーザーはいません。"
-            );
-
-        }
-
-        // debug.htmlのアカウント状態を更新
-        if (typeof updateDebugAccountStatus === "function") {
-            updateDebugAccountStatus(session);
-        }
-
-    } catch (error) {
-
-        console.error(
-            "ログイン状態の確認に失敗しました:",
-            error
-        );
-
-    }
-}
-);
-
-}
-
-} catch (error) {
-
-console.error(
-"ログイン状態の確認に失敗しました:",
-error
-);
-
-}
-
-}
-
-
-/* ログアウト */
-
-async function logout() {
-
-if (!supabaseClient) {
-console.error(
-"Supabaseが初期化されていません。"
-);
-return;
-}
-
-
-try {
-
-const { error } =
-await supabaseClient.auth.signOut();
-
-
-if (error) {
-throw error;
-}
-
-
-console.log("ログアウトしました。");
-
-
-showAuthMessage(
-"ログアウトしました。"
-);
-
-
-} catch (error) {
-
-console.error(
-"ログアウトエラー:",
-error
-);
-
-showAuthMessage(
-getAuthErrorMessage(error),
-true
-);
-
-}
-
-}
-
-
-/* Supabaseエラーを日本語に変換 */
-
-function getAuthErrorMessage(error) {
-
-if (!error) {
-return "不明なエラーが発生しました。";
-}
-
-
-const message =
-error.message || "";
-
-
-/* ログイン関連 */
-
-if (
-message.includes("Invalid login credentials")
-) {
-return "メールアドレスまたはパスワードが正しくありません。";
-}
-
-
-/* 既に登録済み */
-
-if (
-message.includes("User already registered")
-) {
-return "このメールアドレスはすでに登録されています。";
-}
-
-
-/* パスワード */
-
-if (
-message.includes("Password should be at least")
-) {
-return "パスワードが短すぎます。";
-}
-
-
-/* メールアドレス */
-
-if (
-message.includes("Invalid email")
-) {
-return "メールアドレスの形式が正しくありません。";
-}
-
-
-/* レート制限 */
-
-if (
-message.includes("rate limit") ||
-message.includes("Too many requests")
-) {
-return "操作回数が多すぎます。少し待ってからもう一度お試しください。";
-}
-
-
-/* その他 */
-
-return "エラーが発生しました：" + message;
-
-}
-/* ログイン状態を確認 */
-
-async function checkLoginStatus() {
-
-const {
-data: { session },
-error
-} = await supabaseClient.auth.getSession();
-
-if (error) {
-console.error("ログイン状態の取得に失敗しました:", error);
-return null;
-}
-
-return session;
-}
-supabaseClient.auth.onAuthStateChange(
-    function (event, session) {
-
-        console.log(
-            "認証状態が変化しました:",
-            event
-        );
-
-        if (session && session.user) {
-
-            console.log(
-                "ログイン中のユーザー:",
-                session.user.email
-            );
-
-        } else {
-
-            console.log("未ログイン");
-
-        }
-
-        // debug.htmlのアカウント状態を更新
-        if (typeof updateDebugAccountStatus === "function") {
-            updateDebugAccountStatus(session);
-        }
-    }
-);

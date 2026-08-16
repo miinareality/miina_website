@@ -341,3 +341,31 @@ align-items: center;
     line-height: 1.7;
     word-break: break-word;
 }
+
+
+/* =========================================================
+   Stability fixes
+   Existing UI rules are intentionally preserved.
+   ========================================================= */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+#account-status {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 2000;
+    box-sizing: border-box;
+}
+
+/* Memo page keeps the site's existing visual language without
+   changing the existing pages. */
+@media screen and (max-width: 600px) {
+    #account-status {
+        right: 12px;
+        bottom: 12px;
+        max-width: calc(100vw - 24px);
+    }
+}

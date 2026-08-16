@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta cahtset="UTF=8">
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>debug - miina web site</title>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -55,7 +56,6 @@ setInterval(() => {
 location.reload();
 }, 120 * 1000);
 </script>
-<script src="2nd/auth.js"></script>
 <script>
 function updateDebugAccountStatus(session) {
 const statusElement =
@@ -97,7 +97,8 @@ statusElement.innerHTML = `
 }
 }
 </script>
-
-<script src="2nd/auth.js"></script>
+    <script src="2nd/auth.js"></script>
+    <script src="2nd/debug-auth.js"></script>
+<p style="text-align:center;"><a href="2nd/memo.html">📝 メモ帳</a></p>
 </body>
 </html>
