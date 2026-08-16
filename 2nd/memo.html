@@ -49,6 +49,28 @@
     </style>
 </head>
 <body>
+    <button id="menuButton" class="menu-button" onclick="toggleMenu()">☰ メニュー</button>
+
+<nav id="sideMenu" class="side-menu">
+<h2>メニュー</h2>
+<a href="./">🏠 ホーム</a>
+<a href="2nd/dice.html">🎲 ダイス</a>
+<a href="2nd/member.html">🙍 バッチ取得者への待遇</a>
+<a href="2nd/materials.html">🖼 使用素材</a>
+<a href="2nd/business.html">💼 企業様への連絡</a>
+</nav>
+
+<script>
+function toggleMenu() {
+const menu = document.getElementById("sideMenu");
+menu.classList.toggle("open");
+}
+document.querySelectorAll("#sideMenu a").forEach(link => {
+link.addEventListener("click", function() {
+document.getElementById("sideMenu").classList.remove("open");
+});
+});
+</script>
     <div class="memo-page">
         <div class="memo-box">
             <h1>📝 メモ帳</h1>
