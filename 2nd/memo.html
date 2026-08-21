@@ -49,6 +49,19 @@
     </style>
 </head>
 <body>
+    <!-- メニューボタン -->
+<button id="menuButton" class="menu-button" onclick="toggleMenu()">
+    ☰ メニュー
+</button>
+
+<!-- 右側メニュー -->
+<nav id="sideMenu" class="side-menu">
+<h2>メニュー</h2>
+<a href="../">🏠 ホーム</a>
+<a href="dice.html">🎲 ダイス</a>
+<a href="materials.html">🖼 使用素材</a>
+<a href="memo.html">📝 メモ帳</a>
+</nav>
     <div class="memo-page">
         <div class="memo-box">
             <h1>📝 メモ帳</h1>
@@ -61,6 +74,23 @@
             <div id="memo-status" aria-live="polite">読み込み中…</div>
         </div>
     </div>
-    <script src="memo.js"></script>
+    <script src="memo.js">
+        /* メニュー */
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    menu.classList.toggle("open");
+}
+
+document.querySelectorAll("#sideMenu a").forEach(link => {
+    link.addEventListener("click", () => {
+        document.getElementById("sideMenu").classList.remove("open");
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    displayDiceResults();
+    loadDiceHistory();
+});
+    </script>
 </body>
 </html>
