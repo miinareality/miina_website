@@ -49,7 +49,7 @@
     </style>
 </head>
 <body>
-    <!-- メニューボタン -->
+<!-- メニューボタン -->
 <button id="menuButton" class="menu-button" onclick="toggleMenu()">
     ☰ メニュー
 </button>
@@ -75,22 +75,17 @@
         </div>
     </div>
     <script src="memo.js">
-        /* メニュー */
+/* メニュー */
 function toggleMenu() {
     const menu = document.getElementById("sideMenu");
     menu.classList.toggle("open");
 }
 
 document.querySelectorAll("#sideMenu a").forEach(link => {
-    link.addEventListener("click", () => {
+    link.addEventListener("click", function() {
         document.getElementById("sideMenu").classList.remove("open");
     });
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-    displayDiceResults();
-    loadDiceHistory();
-});
-    </script>
+</script>
 </body>
 </html>
